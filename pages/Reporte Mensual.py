@@ -1,10 +1,10 @@
 import pandas as pd
 import streamlit as st
-from Home import doc
+import Home
 
 # File Uploader
 
-df = pd.read_excel(doc)
+df = pd.read_excel(Home.doc)
 
 df['Document Date'] = pd.to_datetime(df['Document Date'])
 
