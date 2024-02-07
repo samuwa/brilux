@@ -9,6 +9,12 @@ if doc != None and reporte == "Diario":
 
   df = pd.read_excel(doc)
 
+  df =df[df["SOP Type"] == "Pedido"]
+
+  # Fila total = QTY * Precio / Exchange Rate
+
+  df['Venta Producto ($)'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
+
   df['Document Date'] = pd.to_datetime(df['Document Date'])
   
   st.subheader("Reporte del día")
@@ -67,6 +73,12 @@ if doc != None and reporte == "Diario":
 elif doc != None and reporte == "Mensual":
   df = pd.read_excel(doc)
 
+  df =df[df["SOP Type"] == "Pedido"]
+
+  # Fila total = QTY * Precio / Exchange Rate
+
+  df['Venta Producto ($)'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
+  
   df['Document Date'] = pd.to_datetime(df['Document Date'])
 
   st.subheader("Reporte Mensual")
@@ -85,7 +97,7 @@ elif doc != None and reporte == "Mensual":
   
   # Adapted: Ventas Totales using "Venta Producto ($)"
   total_sales = filtered_data['Venta Producto ($)'].sum()
-  col2.metric(label="Ventas Totales", value=f"$. {total_sales:,.0f}")
+  col2.metric(label="Ventas Totales", value=f"$ {total_sales:,.0f}")
   
   # Unidades por producto (remains the same)
   st.write("**Unidades Vendidas por Producto**")
