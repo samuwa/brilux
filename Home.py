@@ -77,7 +77,7 @@ elif doc != None and reporte == "Mensual":
   
   df['Document Date'] = pd.to_datetime(df['Document Date'])
 
-  st.subheader("Reporte Mensual")
+  st.subheader("Reporte Mensual - Solo Pedidos")
   
   col1, col2 = st.columns(2)
   
