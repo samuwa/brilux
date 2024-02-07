@@ -3,9 +3,9 @@ import streamlit as st
 
 doc = st.sidebar.file_uploader("Montar Excel")
 
-reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario", "Mensual"])
+reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Ventas", "Mensual - Ventas"])
 
-if doc != None and reporte == "Diario":
+if doc != None and reporte == "Diario - Ventas":
 
   df = pd.read_excel(doc)
 
@@ -66,7 +66,7 @@ if doc != None and reporte == "Diario":
   
 
 
-elif doc != None and reporte == "Mensual":
+elif doc != None and reporte == "Mensual - Ventas":
   df = pd.read_excel(doc)
 
   df = df[df["SOP Type"] == "Pedido"]
