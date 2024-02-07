@@ -1,9 +1,10 @@
 import pandas as pd
 import streamlit as st
 
-doc = st.sidebar.file_uploader("Montar Excel")
+doc = st.sidebar.file_uploader("Montar Excel - **Pedidos**")
+adoc = st.sidebar.file_uploader("Montar Excel - **CXC**")
 
-reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos"])
+reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC"])
 
 if doc != None and reporte == "Diario - Pedidos":
 
@@ -128,6 +129,191 @@ elif doc != None and reporte == "Mensual - Pedidos":
   # Table of Units Purchased (remains the same)
   product_details = customer_data.groupby('Item Description')['QTY'].sum().reset_index()
   col2.table(product_details.sort_values("QTY", ascending=False))
+
+elif adoc!= None and reporte == "CXC":
+  df = pd.read_excel(adoc)
+
+
+  def format_currency(val):
+      return "{:,.0f}".format(val)
+  
+  def categorize_transaction(days_past_due):
+      if days_past_due <= 0:
+          return 'Babies'
+      elif 0 < days_past_due <= 20:
+          return 'Ripe'
+      elif 20 < days_past_due <= 45:
+          return 'Danger Zone'
+      else:  # days_past_due > 45
+          return 'Bugsy Siegel'
+  
+  
+  df['Document Date'] = pd.to_datetime(df['Document Date'])
+  
+  # Set the minimum document date as the default for the date picker
+  min_document_date = df['Document Date'].min()
+  
+  # Use columns for layout
+  col1, col2 = st.columns(2)
+  
+  selected_date = col1.date_input("Filter results from this date:", min_document_date)
+  
+  # Filter the DataFrame based on the selected date
+  df_filtered = df[df['Document Date'] >= pd.Timestamp(selected_date)]
+  
+  # Find rows with 'Exchange Rate' equal to 0 in the filtered DataFrame
+  invalid_exchange_rates = df_filtered[df_filtered['Exchange Rate'] == 0]
+  
+  # Create an informational message with the document numbers excluded
+  
+  
+  # Remove rows with 'Exchange Rate' of 0 from the filtered DataFrame
+  df_filtered = df_filtered[df_filtered['Exchange Rate'] != 0]
+  
+  # Perform the conversion on the filtered DataFrame
+  df_filtered['Current Trx Amount USD'] = df_filtered['Current Trx Amount'] / df_filtered['Exchange Rate']
+  df_filtered['Original Trx Amount USD'] = df_filtered['Original Trx Amount'] / df_filtered['Exchange Rate']
+  
+  # Calculate the total USD currently owed using the filtered DataFrame
+  total_usd_owed = df_filtered['Current Trx Amount USD'].sum()
+  
+  # Display the metric in Streamlit
+  
+  col2.metric(label="Total USD Currently Owed", value=f"${total_usd_owed:,.2f}")
+  
+  # Display the metric in Streamlit
+  
+  customer_grouped = df_filtered.groupby('Customer Name').agg(
+      Total_Original_Amount_USD=('Original Trx Amount USD', 'sum'),
+      Total_Current_Amount_USD=('Current Trx Amount USD', 'sum')
+  ).reset_index()
+  
+  # Sort the grouped data in descending order of 'Total_Current_Amount_USD'
+  customer_grouped_sorted = customer_grouped.sort_values(by='Total_Current_Amount_USD', ascending=False)
+  
+  
+  customer_grouped_sorted['Percentage Paid'] = (
+      (customer_grouped_sorted['Total_Original_Amount_USD'] - customer_grouped_sorted['Total_Current_Amount_USD']) /
+      customer_grouped_sorted['Total_Original_Amount_USD']
+  ) * 100
+  
+  # Format the 'Percentage Paid' column to zero decimals and add the percentage sign
+  customer_grouped_sorted['Percentage Paid'] = customer_grouped_sorted['Percentage Paid'].apply(lambda x: "{:.0f}%".format(x))
+  
+  customer_grouped_sorted['Total_Original_Amount_USD'] = customer_grouped_sorted['Total_Original_Amount_USD'].apply(format_currency)
+  customer_grouped_sorted['Total_Current_Amount_USD'] = customer_grouped_sorted['Total_Current_Amount_USD'].apply(format_currency)
+  
+  
+  # Now you can display this DataFrame in your Streamlit app
+  st.write("Customer Debt Summary", customer_grouped_sorted)
+  
+  
+  # Create a select box of customers
+  customer_names = sorted(df_filtered['Customer Name'].unique())
+  selected_customer = st.selectbox('Select a Customer', customer_names)
+  
+  # Filter the DataFrame for the selected customer
+  customer_transactions = df_filtered[df_filtered['Customer Name'] == selected_customer].copy()
+  
+  # Calculate 'Days Past Due' for each transaction
+  customer_transactions['Due Date'] = pd.to_datetime(customer_transactions['Due Date'])
+  customer_transactions['Days Past Due'] = (datetime.now() - customer_transactions['Due Date']).dt.days.clip(lower=0)
+  
+  # Format the date columns to exclude time
+  customer_transactions['Document Date'] = customer_transactions['Document Date'].dt.strftime('%Y-%m-%d')
+  customer_transactions['Due Date'] = customer_transactions['Due Date'].dt.strftime('%Y-%m-%d')
+  
+  # Format currency columns
+  customer_transactions['Original Trx Amount USD'] = customer_transactions['Original Trx Amount USD'].apply(lambda x: "${:,.0f}".format(x))
+  customer_transactions['Current Trx Amount USD'] = customer_transactions['Current Trx Amount USD'].apply(lambda x: "${:,.0f}".format(x))
+  
+  # Display the detailed table for the selected customer
+  st.write(f"Transactions for {selected_customer}", customer_transactions[['Document Number', 'Document Date', 'Due Date', 'Original Trx Amount USD', 'Current Trx Amount USD', 'Days Past Due']])
+  
+  
+  
+  df_filtered['Due Date'] = pd.to_datetime(df_filtered['Due Date'])
+  df_filtered['Days Past Due'] = (pd.to_datetime('today') - df_filtered['Due Date']).dt.days.apply(lambda x: x if x > 0 else 0)
+  
+  
+  
+  df_filtered['Category'] = df_filtered['Days Past Due'].apply(categorize_transaction)
+  
+  # Now, you can display the DataFrame, grouped by the new 'Category' column, or filter it based on the category
+  # For example, to display the count of transactions in each category:
+  # st.write(df_filtered['Category'].value_counts().reset_index().rename(columns={'index': 'Bucket', 'Category': 'Count'}))
+  #
+  # # If you want to allow the user to select a category and view transactions in that category:
+  # selected_category = st.selectbox('Select a Category', ['Babies', 'Ripe', 'Danger Zone', 'Bugsy Siegel'])
+  # filtered_by_category = df_filtered[df_filtered['Category'] == selected_category]
+  #
+  # # Display the transactions for the selected category
+  # st.write(f"Transactions in the {selected_category} category", filtered_by_category)
+  
+  
+  
+  category_sums = df_filtered.groupby('Category')['Current Trx Amount USD'].sum().reset_index()
+  
+  # Specify the custom order for the categories
+  category_order = ['Babies', 'Ripe', 'Danger Zone', 'Bugsy Siegel']
+  
+  # Ensure the DataFrame follows the specified order by setting a categorical type with the given order
+  category_sums['Category'] = pd.Categorical(category_sums['Category'], categories=category_order, ordered=True)
+  
+  # Sort the DataFrame by the 'Category' column to respect the custom order
+  category_sums = category_sums.sort_values('Category')
+  
+  # Define the color for each category
+  category_colors = {
+      'Babies': 'green',
+      'Ripe': 'yellow',
+      'Danger Zone': 'orange',
+      'Bugsy Siegel': 'red',
+  }
+  
+  # Create a bar chart with Plotly Express
+  fig = px.bar(category_sums,
+               x='Category',
+               y='Current Trx Amount USD',
+               color='Category',
+               color_discrete_map=category_colors,
+               title="Current Amount Owed by Category")
+  
+  # Display the plot in Streamlit
+  st.plotly_chart(fig)
+  
+  st.info("Babies = No ha llegado Due Date | Ripe = Menos de 20 días pasados del due date | Danger Zone = Entre 20 y 45 días pasados del due date | Bugsy = mas de 45 días pasados del due date")
+  
+  category_options = ['Babies', 'Ripe', 'Danger Zone', 'Bugsy Siegel']
+  selected_category = st.selectbox('Select a Category:', category_options)
+  
+  # Filter transactions based on the selected category
+  filtered_transactions = df_filtered[df_filtered['Category'] == selected_category]
+  
+  # Calculate 'Percentage Paid' for the filtered transactions
+  filtered_transactions['Percentage Paid'] = (1 - (filtered_transactions['Current Trx Amount USD'] / filtered_transactions['Original Trx Amount USD'])) * 100
+  
+  # Select and rename columns for display
+  columns_to_display = ['Document Number', 'Document Date', 'Customer Name', 'Original Trx Amount USD', 'Current Trx Amount USD', 'Percentage Paid', 'Due Date', 'Days Past Due']
+  filtered_transactions_display = filtered_transactions[columns_to_display]
+  
+  # Format the DataFrame for nicer display
+  filtered_transactions_display['Document Date'] = filtered_transactions_display['Document Date'].dt.strftime('%Y-%m-%d')
+  filtered_transactions_display['Due Date'] = filtered_transactions_display['Due Date'].dt.strftime('%Y-%m-%d')
+  filtered_transactions_display['Original Trx Amount USD'] = filtered_transactions_display['Original Trx Amount USD'].apply(lambda x: "${:,.2f}".format(x))
+  filtered_transactions_display['Current Trx Amount USD'] = filtered_transactions_display['Current Trx Amount USD'].apply(lambda x: "${:,.2f}".format(x))
+  filtered_transactions_display['Percentage Paid'] = filtered_transactions_display['Percentage Paid'].apply(lambda x: "{:.0f}%".format(x))
+  
+  # Display the DataFrame
+  st.dataframe(filtered_transactions_display)
+  
+  
+  # Create an informational message with the document numbers excluded
+  if not invalid_exchange_rates.empty:
+      excluded_documents = invalid_exchange_rates['Document Number'].tolist()
+      message = f"The following document numbers had no exchange rate and were excluded from the analysis: {excluded_documents}"
+      st.info(message)
+  
 
 else:
   pass
