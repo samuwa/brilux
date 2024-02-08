@@ -3,14 +3,21 @@ import streamlit as st
 from datetime import datetime
 import plotly.express as px
 
-doc = st.sidebar.file_uploader("Montar Excel - **Pedidos**")
+docs = st.sidebar.file_uploader("Montar Excel - **Pedidos**", accept_multiple_files=True)
 adoc = st.sidebar.file_uploader("Montar Excel - **CXC**")
 
 reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC"])
 
-if doc != None and reporte == "Diario - Pedidos":
+if docs != None and reporte == "Diario - Pedidos":
 
-  df = pd.read_excel(doc)
+  dfs = []
+
+  for doc in docs:
+    if doc is not None:
+      df = pd.read_excel(doc)
+      dfs.append(df)
+
+  df = pd.concat(dfs, ignore_index=True)
 
   df =df[df["SOP Type"] == "Pedido"]
   
