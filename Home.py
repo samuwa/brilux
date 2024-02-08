@@ -273,10 +273,10 @@ elif adoc!= None and reporte == "CXC":
   # Specify the custom order for the categories
   category_order = ['Babies', 'Ripe', 'Danger Zone', 'Bugsy Siegel']
 
-  for category in category_order:
-    if category not in category_sums['Category'].values:
-        # Append missing category with a sum of 0
-        category_sums = category_sums.append({'Category': category, 'Current Trx Amount USD': 0}, ignore_index=True)
+  all_categories = ['Babies', 'Ripe', 'Danger Zone', 'Bugsy Siegel']
+  # Initialize a DataFrame to ensure all categories are accounted for
+  category_sums = pd.DataFrame(all_categories, columns=['Category'])
+  category_sums = category_sums.merge(actual_sums, on='Category', how='left').fillna(0)
 
   
   # Ensure the DataFrame follows the specified order by setting a categorical type with the given order
