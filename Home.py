@@ -76,7 +76,7 @@ if docs != [] and reporte == "Diario - Pedidos":
   
 
 
-elif doc != None and reporte == "Mensual - Pedidos":
+elif docs != [] and reporte == "Mensual - Pedidos":
   df = pd.read_excel(doc)
 
   df = df[df["SOP Type"] == "Pedido"]
@@ -140,7 +140,14 @@ elif doc != None and reporte == "Mensual - Pedidos":
   col2.table(product_details.sort_values("QTY", ascending=False))
 
 elif adoc!= None and reporte == "CXC":
-  df = pd.read_excel(adoc)
+  dfs = []
+
+  for doc in docs:
+    if doc is not None:
+      df = pd.read_excel(doc)
+      dfs.append(df)
+
+  df = pd.concat(dfs, ignore_index=True)
 
 
   def format_currency(val):
