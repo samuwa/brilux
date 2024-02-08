@@ -8,7 +8,7 @@ adoc = st.sidebar.file_uploader("Montar Excel - **CXC**")
 
 reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC"])
 
-if docs != None and reporte == "Diario - Pedidos":
+if docs != [] and reporte == "Diario - Pedidos":
 
   dfs = []
 
