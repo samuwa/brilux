@@ -273,17 +273,17 @@ elif adoc!= None and reporte == "CXC":
   # Specify the custom order for the categories
   category_order = ['Babies', 'Ripe', 'Danger Zone', 'Bugsy Siegel']
 
-  all_categories = ['Babies', 'Ripe', 'Danger Zone', 'Bugsy Siegel']
-  # Initialize a DataFrame to ensure all categories are accounted for
-  category_sums = pd.DataFrame(all_categories, columns=['Category'])
-  category_sums = category_sums.merge(actual_sums, on='Category', how='left').fillna(0)
+  actual_sums = df_filtered.groupby('Category')['Current Trx Amount USD'].sum().reset_index()
 
+  # Define all categories to ensure they are represented, even if not present in the data
+  all_categories = ['Babies', 'Ripe', 'Danger Zone', 'Bugsy Siegel']
   
-  # Ensure the DataFrame follows the specified order by setting a categorical type with the given order
-  category_sums['Category'] = pd.Categorical(category_sums['Category'], categories=category_order, ordered=True)
+  # Create a DataFrame with all categories to ensure they are included
+  all_categories_df = pd.DataFrame(all_categories, columns=['Category'])
   
-  # Sort the DataFrame by the 'Category' column to respect the custom order
-  category_sums = category_sums.sort_values('Category')
+  # Merge the actual sums with the all categories DataFrame, ensuring all categories are included
+  category_sums = all_categories_df.merge(actual_sums, on='Category', how='left').fillna(0)
+
   
   # Define the color for each category
   category_colors = {
