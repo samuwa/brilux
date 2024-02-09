@@ -148,9 +148,8 @@ elif docs != [] and reporte == "Mensual - Pedidos":
 
   customer_data['Document Date'] = pd.to_datetime(customer_data['Document Date']).dt.date
 
-  # Get unique dates for the selected customer and selected month
-  unique_dates = customer_data['Document Date'].unique()
-  unique_dates.sort()  # Sort the dates
+  # Get unique dates for the selected customer and selected month, then sort them
+  unique_dates = sorted(customer_data['Document Date'].unique())
   
   for date in unique_dates:
       # Filter data for each specific day
@@ -165,8 +164,6 @@ elif docs != [] and reporte == "Mensual - Pedidos":
       daily_summary = pd.concat([daily_summary, total_row], ignore_index=True)
       
       # Format the 'Venta Producto ($)' column
-      # For the 'TOTAL' row, format with two decimal places and a dollar sign
-      # For other rows, display as integer (no decimal places)
       daily_summary['Venta Producto ($)'] = daily_summary.apply(lambda x: f"$ {x['Venta Producto ($)']:,.2f}" if x['Item Description'] == 'TOTAL' else int(x['Venta Producto ($)']), axis=1)
       
       # Ensure 'QTY' column is integer for all but the TOTAL row
