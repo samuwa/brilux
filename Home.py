@@ -148,12 +148,15 @@ elif docs != [] and reporte == "Mensual - Pedidos":
 
   customer_data['Document Date'] = pd.to_datetime(customer_data['Document Date']).dt.date
 
-  # Get unique dates for the selected customer and selected month, then sort them
-  unique_dates = sorted(customer_data['Document Date'].unique())
+  # First, sort the entire DataFrame by 'Document Date' to ensure the dates are in ascending order
+  customer_data_sorted = customer_data.sort_values(by='Document Date')
+  
+  # Then, get unique dates from the sorted DataFrame
+  unique_dates = customer_data_sorted['Document Date'].unique()
   
   for date in unique_dates:
-      # Filter data for each specific day
-      daily_data = customer_data[customer_data['Document Date'] == date]
+      # Filter data for each specific day from the sorted DataFrame
+      daily_data = customer_data_sorted[customer_data_sorted['Document Date'] == date]
       
       # Group by 'Item Description' and calculate sum of 'QTY' and 'Venta Producto ($)'
       daily_summary = daily_data.groupby('Item Description').agg({'QTY': 'sum', 'Venta Producto ($)': 'sum'}).reset_index()
@@ -172,6 +175,7 @@ elif docs != [] and reporte == "Mensual - Pedidos":
       # Display the date and the table
       st.write(f"**{date}**")
       st.table(daily_summary)
+
 elif adoc!= None and reporte == "CXC":
 
 
