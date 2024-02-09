@@ -146,6 +146,15 @@ elif docs != [] and reporte == "Mensual - Pedidos":
   product_details = customer_data.groupby('Item Description')['QTY'].sum().reset_index()
   col2.table(product_details.sort_values("QTY", ascending=False))
 
+  daily_purchases_summary = customer_data.groupby(['Document Date', 'Item Description']).agg({'QTY': 'sum', 'Venta Producto ($)': 'sum'}).reset_index()
+
+  # Sort the data by date for better readability
+  daily_purchases_summary = daily_purchases_summary.sort_values(by=['Document Date', 'Item Description'])
+  
+  # Display the table
+  st.write("**Detalle de Compras Diarias por Producto**")
+  st.table(daily_purchases_summary.style.format({'Venta Producto ($)': '{:,.2f}'}))
+
 elif adoc!= None and reporte == "CXC":
 
 
