@@ -148,33 +148,33 @@ elif docs != [] and reporte == "Mensual - Pedidos":
 
   customer_data['Document Date'] = pd.to_datetime(customer_data['Document Date']).dt.date
 
-# Get unique dates for the selected customer and selected month
-unique_dates = customer_data['Document Date'].unique()
-unique_dates.sort()  # Sort the dates
-
-for date in unique_dates:
-    # Filter data for each specific day
-    daily_data = customer_data[customer_data['Document Date'] == date]
-    
-    # Group by 'Item Description' and calculate sum of 'QTY' and 'Venta Producto ($)'
-    daily_summary = daily_data.groupby('Item Description').agg({'QTY': 'sum', 'Venta Producto ($)': 'sum'}).reset_index()
-    
-    # Append a TOTAL row
-    total_sales = daily_summary['Venta Producto ($)'].sum()
-    total_row = pd.DataFrame([['TOTAL', daily_summary['QTY'].sum(), total_sales]], columns=['Item Description', 'QTY', 'Venta Producto ($)'])
-    daily_summary = pd.concat([daily_summary, total_row], ignore_index=True)
-    
-    # Format the 'Venta Producto ($)' column
-    # For the 'TOTAL' row, format with two decimal places and a dollar sign
-    # For other rows, display as integer (no decimal places)
-    daily_summary['Venta Producto ($)'] = daily_summary.apply(lambda x: f"$ {x['Venta Producto ($)']:,.2f}" if x['Item Description'] == 'TOTAL' else int(x['Venta Producto ($)']), axis=1)
-    
-    # Ensure 'QTY' column is integer for all but the TOTAL row
-    daily_summary['QTY'] = daily_summary['QTY'].astype(int, errors='ignore')
-    
-    # Display the date and the table
-    st.write(f"**{date}**")
-    st.table(daily_summary)
+  # Get unique dates for the selected customer and selected month
+  unique_dates = customer_data['Document Date'].unique()
+  unique_dates.sort()  # Sort the dates
+  
+  for date in unique_dates:
+      # Filter data for each specific day
+      daily_data = customer_data[customer_data['Document Date'] == date]
+      
+      # Group by 'Item Description' and calculate sum of 'QTY' and 'Venta Producto ($)'
+      daily_summary = daily_data.groupby('Item Description').agg({'QTY': 'sum', 'Venta Producto ($)': 'sum'}).reset_index()
+      
+      # Append a TOTAL row
+      total_sales = daily_summary['Venta Producto ($)'].sum()
+      total_row = pd.DataFrame([['TOTAL', daily_summary['QTY'].sum(), total_sales]], columns=['Item Description', 'QTY', 'Venta Producto ($)'])
+      daily_summary = pd.concat([daily_summary, total_row], ignore_index=True)
+      
+      # Format the 'Venta Producto ($)' column
+      # For the 'TOTAL' row, format with two decimal places and a dollar sign
+      # For other rows, display as integer (no decimal places)
+      daily_summary['Venta Producto ($)'] = daily_summary.apply(lambda x: f"$ {x['Venta Producto ($)']:,.2f}" if x['Item Description'] == 'TOTAL' else int(x['Venta Producto ($)']), axis=1)
+      
+      # Ensure 'QTY' column is integer for all but the TOTAL row
+      daily_summary['QTY'] = daily_summary['QTY'].astype(int, errors='ignore')
+      
+      # Display the date and the table
+      st.write(f"**{date}**")
+      st.table(daily_summary)
 elif adoc!= None and reporte == "CXC":
 
 
