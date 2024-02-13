@@ -219,6 +219,7 @@ elif adoc!= None and reporte == "CXC":
   
   # Remove rows with 'Exchange Rate' of 0 from the filtered DataFrame
   df_filtered = df_filtered[df_filtered['Exchange Rate'] != 0]
+  df_filtered = df_filtered[df_filtered['Current Trx Amount'] > 0]
   
   # Perform the conversion on the filtered DataFrame
   
