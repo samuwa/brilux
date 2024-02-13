@@ -221,7 +221,6 @@ elif adoc!= None and reporte == "CXC":
   df_filtered = df_filtered[df_filtered['Exchange Rate'] != 0]
   
   # Perform the conversion on the filtered DataFrame
-  df= df_filtered[df["Current Trx Amount"] > 0]
   
   df_filtered['Current Trx Amount USD'] = df_filtered['Current Trx Amount'] / df_filtered['Exchange Rate']
   df_filtered['Original Trx Amount USD'] = df_filtered['Original Trx Amount'] / df_filtered['Exchange Rate']
