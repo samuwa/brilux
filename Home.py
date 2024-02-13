@@ -97,6 +97,7 @@ elif docs != [] and reporte == "Mensual - Pedidos":
   
   df['Document Date'] = pd.to_datetime(df['Document Date'])
 
+
   st.subheader("Reporte Mensual - Solo Pedidos")
   
   col1, col2 = st.columns(2)
@@ -220,6 +221,8 @@ elif adoc!= None and reporte == "CXC":
   df_filtered = df_filtered[df_filtered['Exchange Rate'] != 0]
   
   # Perform the conversion on the filtered DataFrame
+  df= df[df["Current Trx Amount"] > 0]] 
+  
   df_filtered['Current Trx Amount USD'] = df_filtered['Current Trx Amount'] / df_filtered['Exchange Rate']
   df_filtered['Original Trx Amount USD'] = df_filtered['Original Trx Amount'] / df_filtered['Exchange Rate']
   
