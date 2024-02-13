@@ -27,6 +27,8 @@ if docs != [] and reporte == "Diario - Pedidos":
   
   # Mismo analisis
   df['Document Date'] = pd.to_datetime(df['Document Date'])
+
+  df['Salesperson ID'] = df['Salesperson ID'].astype(str)
   
   st.subheader("Reporte del día - Solo Pedidos")
   
@@ -87,6 +89,7 @@ elif docs != [] and reporte == "Mensual - Pedidos":
   df = pd.concat(dfs, ignore_index=True)
 
   df = df[df["SOP Type"] == "Pedido"]
+  df['Salesperson ID'] = df['Salesperson ID'].astype(str)
 
   # Fila total = QTY * Precio / Exchange Rate
 
