@@ -15,7 +15,6 @@ def reconcile_products(df):
         'Toalla BRILUX Intercalada Blanca 180': 'Toalla BRILUX Intercalada Blanca 12X180'
     }
     
-    # Conversion factors for adapted names
     conversion_factors = {
         'Servilletas BRILUX Disp. Pequeño .200': 16,
         'Papel Higiénico Cherry 300 H': 12,
@@ -27,12 +26,15 @@ def reconcile_products(df):
     
     # Iterate over the DataFrame rows
     for index, row in df.iterrows():
-        # Check if the product name is in the adapted names list
+        # Use "Item Description" instead of "Product"
         if row['Item Description'] in name_map:
-            # Update the product name to the original name
+            # Update the item description to the original name
             df.at[index, 'Item Description'] = name_map[row['Item Description']]
-            # Adjust the quantity by dividing it by the conversion factor
+            # Adjust the quantity by dividing it by the conversion factor and round to 0 decimals
             df.at[index, 'QTY'] = round(row['QTY'] / conversion_factors[row['Item Description']], 0)
+            # Multiply the Unit Price by the conversion factor for the same row
+            df.at[index, 'Unit Price'] = round(row['Unit Price'] * conversion_factors[row['Item Description']], 2)
+            
     return df
 
 
