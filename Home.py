@@ -3,6 +3,40 @@ import streamlit as st
 from datetime import datetime
 import plotly.express as px
 
+# Cambiar productos llamados mal
+def reconcile_products(df):
+    # Mapping of adapted names to original names and conversion factors
+    name_map = {
+        'Servilletas BRILUX Disp. Pequeño .200': 'Servilletas BRILUX Disp. Peq. 16X200',
+        'Papel Higiénico Cherry 300 H': 'Papel Higiénico Cherry 300 12x4',
+        'Papel Higiénico TESSA 800- 200H': 'Papel Higiénico TESSA 800 12x4',
+        'Papel Higiénico TESSA 1200- 300H': 'Papel Higiénico TESSA 1200 12x4',
+        'Servilletas BRILUX De Mesa 100': 'Servilletas BRILUX De Mesa 12X100',
+        'Toalla BRILUX Intercalada Blanca 180': 'Toalla BRILUX Intercalada Blanca 12X180'
+    }
+    
+    # Conversion factors for adapted names
+    conversion_factors = {
+        'Servilletas BRILUX Disp. Pequeño .200': 16,
+        'Papel Higiénico Cherry 300 H': 12,
+        'Papel Higiénico TESSA 800- 200H': 12,
+        'Papel Higiénico TESSA 1200- 300H': 12,
+        'Servilletas BRILUX De Mesa 100': 12,
+        'Toalla BRILUX Intercalada Blanca 180': 12
+    }
+    
+    # Iterate over the DataFrame rows
+    for index, row in df.iterrows():
+        # Check if the product name is in the adapted names list
+        if row['Product'] in name_map:
+            # Update the product name to the original name
+            df.at[index, 'Product'] = name_map[row['Product']]
+            # Adjust the quantity by dividing it by the conversion factor
+            df.at[index, 'QTY'] = row['QTY'] / conversion_factors[row['Product']]
+    return df
+
+
+
 docs = st.sidebar.file_uploader("Montar Excel - **Pedidos**", accept_multiple_files=True)
 adoc = st.sidebar.file_uploader("Montar Excel - **CXC**")
 
@@ -18,6 +52,8 @@ if docs != [] and reporte == "Diario - Pedidos":
       dfs.append(df)
 
   df = pd.concat(dfs, ignore_index=True)
+
+  df = reconcile_products(df)
 
   df =df[df["SOP Type"] == "Pedido"]
   
@@ -88,6 +124,8 @@ elif docs != [] and reporte == "Mensual - Pedidos":
 
   df = pd.concat(dfs, ignore_index=True)
 
+  df = reconcile_products(df)
+  
   df = df[df["SOP Type"] == "Pedido"]
   df['Salesperson ID'] = df['Salesperson ID'].astype(str)
 
