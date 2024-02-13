@@ -32,7 +32,7 @@ def reconcile_products(df):
             # Update the product name to the original name
             df.at[index, 'Item Description'] = name_map[row['Item Description']]
             # Adjust the quantity by dividing it by the conversion factor
-            df.at[index, 'QTY'] = row['QTY'] / conversion_factors[row['Item Description']]
+            df.at[index, 'QTY'] = round(row['QTY'] / conversion_factors[row['Item Description']], 0)
     return df
 
 
