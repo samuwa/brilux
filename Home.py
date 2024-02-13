@@ -28,11 +28,11 @@ def reconcile_products(df):
     # Iterate over the DataFrame rows
     for index, row in df.iterrows():
         # Check if the product name is in the adapted names list
-        if row['Product'] in name_map:
+        if row['Item Description'] in name_map:
             # Update the product name to the original name
-            df.at[index, 'Product'] = name_map[row['Product']]
+            df.at[index, 'Item Description'] = name_map[row['Item Description']]
             # Adjust the quantity by dividing it by the conversion factor
-            df.at[index, 'QTY'] = row['QTY'] / conversion_factors[row['Product']]
+            df.at[index, 'QTY'] = row['QTY'] / conversion_factors[row['Item Description']]
     return df
 
 
