@@ -270,7 +270,7 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
   df2 = df2.rename(columns=mapping)
 
   # Append d1 to d2, filling missing values with empty strings
-  df = pd.concat([d1, d2.fillna("")], ignore_index=True)
+  df = pd.concat([df1, df2.fillna("")], ignore_index=True)
 
     
   def format_currency(val):
