@@ -37,6 +37,9 @@ def reconcile_products(df):
             
     return df
 
+def keep_until_first_quote(string):
+  return string[:string.find("'")]
+
 
 
 docs = st.sidebar.file_uploader("Montar Excel - **Pedidos**", accept_multiple_files=True)
@@ -59,6 +62,7 @@ if docs != [] and reporte == "Diario - Pedidos":
 
 
   df =df[df["SOP Type"] == "Pedido"]
+  df['Compania'] = df['Compania'].apply(keep_until_first_quote)  
 
   # Filtrar por compañia
   compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
@@ -135,6 +139,7 @@ elif docs != [] and reporte == "Mensual - Pedidos":
   df = reconcile_products(df)
   
   df = df[df["SOP Type"] == "Pedido"]
+  df['Compania'] = df['Compania'].apply(keep_until_first_quote)    
 
   compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
