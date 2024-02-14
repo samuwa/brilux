@@ -264,7 +264,7 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
     return df_merged
 
     # Define mapping dictionary
-    mapping = {
+   mapping = {
         "Exchange Rate": "Exchange Rate",
         "Current Trx Amount": "Subtotal",
         "Customer Name": "Customer Name",
