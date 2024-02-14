@@ -42,19 +42,20 @@ def keep_until_first_quote(string):
 
 
 
-docs = st.sidebar.file_uploader("Montar Excel - **Pedidos**", accept_multiple_files=True)
+docs = st.sidebar.file_uploader("Montar Excel - **Pedidos CON Factura**")
+bdoc = st.sidebar.file_uploader("Montar Excel - **Pedidos SIN Factura**")
 adoc = st.sidebar.file_uploader("Montar Excel - **CXC**")
+
 
 reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC"])
 
-if docs != [] and reporte == "Diario - Pedidos":
+if docs != None and bdoc != None and reporte == "Diario - Pedidos":
 
-  dfs = []
 
-  for doc in docs:
-    if doc is not None:
-      df = pd.read_excel(doc)
-      dfs.append(df)
+  df1 = pd.read_excel(docs)
+  df2 = pd.read_excel(bdoc)
+
+  dfs = [df1, df2]  
 
   df = pd.concat(dfs, ignore_index=True)
 
@@ -131,13 +132,12 @@ if docs != [] and reporte == "Diario - Pedidos":
   
 
 
-elif docs != [] and reporte == "Mensual - Pedidos":
-  dfs = []
+elif docs != None and bdoc != None and reporte == "Mensual - Pedidos":
 
-  for doc in docs:
-    if doc is not None:
-      df = pd.read_excel(doc)
-      dfs.append(df)
+  df1 = pd.read_excel(docs)
+  df2 = pd.read_excel(bdoc)
+
+  dfs = [df1, df2]  
 
   df = pd.concat(dfs, ignore_index=True)
 
@@ -251,10 +251,31 @@ elif docs != [] and reporte == "Mensual - Pedidos":
         with st.expander("Pedidos sin 'Exchange Rate'"):
             st.write(adf["SOP Number"].unique())  
 
-elif adoc!= None and reporte == "CXC":
+elif adoc!= None and bdoc != None and reporte == "CXC":
 
 
-  df = pd.read_excel(adoc)
+  df1 = pd.read_excel(adoc)
+  df2 = pd.read_excel(bdoc)
+    
+  def concat_dfs(df1, df2, mapping):
+    df_merged = pd.concat([df1, df2.reindex(df1.index, fill_value="")], axis=1)
+    for col1, col2 in mapping.items():
+        df_merged[col1] = df_merged[col2]
+    return df_merged
+
+    # Define mapping dictionary
+    mapping = {
+        "Exchange Rate": "Exchange Rate",
+        "Current Trx Amount": "Subtotal",
+        "Customer Name": "Customer Name",
+        "Document Date": "Document Date",
+        "Document Number": "SOP Number",
+        "Compania": "Compania",
+        "SOP Type": "SOP Type"
+    }  
+
+  df = concat_dfs(df1, df2, mapping)
+    
   def format_currency(val):
       return "{:,.0f}".format(val)
   
