@@ -264,16 +264,14 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
     return df_merged
 
     # Define mapping dictionary
-   mapping = {
-        "Exchange Rate": "Exchange Rate",
+  mapping = {"Exchange Rate": "Exchange Rate",
         "Current Trx Amount": "Subtotal",
         "Customer Name": "Customer Name",
         "Document Date": "Document Date",
         "Document Number": "SOP Number",
         "Compania": "Compania",
-        "SOP Type": "SOP Type"
-    }  
-
+        "SOP Type": "SOP Type"}  
+  
   df = concat_dfs(df1, df2, mapping)
     
   def format_currency(val):
