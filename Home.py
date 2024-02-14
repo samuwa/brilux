@@ -257,11 +257,6 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
   df1 = pd.read_excel(adoc)
   df2 = pd.read_excel(bdoc)
     
-  def concat_dfs(df1, df2, mapping):
-    df_merged = pd.concat([df1, df2.reindex(df1.index, fill_value="")], axis=1)
-    for col1, col2 in mapping.items():
-        df_merged[col1] = df_merged[col2]
-    return df_merged
 
     # Define mapping dictionary
   mapping = {"Exchange Rate": "Exchange Rate",
@@ -272,9 +267,12 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
         "Compania": "Compania",
         "SOP Type": "SOP Type"}  
   
-  df = concat_dfs(df1, df2, mapping)
+  d2 = d2.rename(columns=mapping)
 
-  df['Document Date'] = df['Document Date'].astype(str)      
+  # Append d1 to d2, filling missing values with empty strings
+  df_merged = d1.append(d2.fillna(""))
+
+    
   def format_currency(val):
       return "{:,.0f}".format(val)
   
