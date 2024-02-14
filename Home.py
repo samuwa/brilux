@@ -273,7 +273,8 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
         "SOP Type": "SOP Type"}  
   
   df = concat_dfs(df1, df2, mapping)
-    
+
+  df['Document Date'] = df['Document Date'].astype(str)      
   def format_currency(val):
       return "{:,.0f}".format(val)
   
