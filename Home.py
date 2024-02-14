@@ -256,6 +256,7 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
 
   df1 = pd.read_excel(adoc)
   df2 = pd.read_excel(bdoc)
+  df2 = df2.drop_duplicates(subset='SOP Number', keep='first')  
     
 
     # Define mapping dictionary
