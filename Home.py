@@ -260,17 +260,17 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
 
     # Define mapping dictionary
   mapping = {"Exchange Rate": "Exchange Rate",
-        "Current Trx Amount": "Subtotal",
+        "Subtotal":"Current Trx Amount",
         "Customer Name": "Customer Name",
         "Document Date": "Document Date",
-        "Document Number": "SOP Number",
+        "SOP Number":"Document Number",
         "Compania": "Compania",
         "SOP Type": "SOP Type"}  
   
   df2 = df2.rename(columns=mapping)
 
   # Append d1 to d2, filling missing values with empty strings
-  df_merged = df1.append(df2.fillna(""))
+  df = pd.concat([d1, d2.fillna("")], ignore_index=True)
 
     
   def format_currency(val):
