@@ -38,7 +38,7 @@ def reconcile_products(df):
     return df
 
 def keep_until_first_quote(string):
-  return string[:string.find("'")]
+  return string[:string.find("C.A")]
 
 
 
