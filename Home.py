@@ -67,7 +67,8 @@ if docs != [] and reporte == "Diario - Pedidos":
   # Filtrar por compañia
   compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-  df = df[df["Compania"] == compania]    
+  df = df[df["Compania"] == compania]
+  df = df[df["Exchange Rate"] > 0]  
   
   # Fila total = QTY * Precio / Exchange Rate
   
@@ -143,7 +144,8 @@ elif docs != [] and reporte == "Mensual - Pedidos":
 
   compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-  df = df[df["Compania"] == compania]      
+  df = df[df["Compania"] == compania]
+  df = df[df["Exchange Rate"] > 0]  
   df['Salesperson ID'] = df['Salesperson ID'].astype(str)
 
   # Fila total = QTY * Precio / Exchange Rate
