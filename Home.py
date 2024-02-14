@@ -152,9 +152,7 @@ elif docs != [] and reporte == "Mensual - Pedidos":
 
   adf = df[df["Exchange Rate"] == 0]
 
-  if len(adf["SOP Number"]) > 0:
-    with st.expander("Pedidos sin 'Exchange Rate'"):
-        st.write(adf["SOP Number"].unique())
+  
   
     
   df = df[df["Exchange Rate"] > 0]  
@@ -248,6 +246,10 @@ elif docs != [] and reporte == "Mensual - Pedidos":
       # Display the date and the table
       st.write(f"**{date}**")
       st.table(daily_summary)
+
+      if len(adf["SOP Number"]) > 0:
+        with st.expander("Pedidos sin 'Exchange Rate'"):
+            st.write(adf["SOP Number"].unique())  
 
 elif adoc!= None and reporte == "CXC":
 
