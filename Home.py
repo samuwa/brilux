@@ -84,7 +84,7 @@ if docs != [] and reporte == "Diario - Pedidos":
   # Unidades por producto (remains the same)
   st.write("**Unidades Vendidas por Producto**")
   product_qty = filtered_data.groupby('Item Description')['QTY'].sum().reset_index()
-  product_qty = product_qty.sort_values("QTY", ascending=False).reset_index()
+  product_qty = product_qty.sort_values("QTY", ascending=False)
   st.table(product_qty)
   
   # Adapted: Ventas por vendedor using "Venta Producto ($)"
