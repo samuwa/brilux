@@ -57,6 +57,8 @@ if docs != [] and reporte == "Diario - Pedidos":
 
   df = reconcile_products(df)
 
+  st.write(df.columns)  
+
   df =df[df["SOP Type"] == "Pedido"]
   
   # Fila total = QTY * Precio / Exchange Rate
