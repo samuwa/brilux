@@ -267,10 +267,10 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
         "Compania": "Compania",
         "SOP Type": "SOP Type"}  
   
-  d2 = d2.rename(columns=mapping)
+  df2 = df2.rename(columns=mapping)
 
   # Append d1 to d2, filling missing values with empty strings
-  df_merged = d1.append(d2.fillna(""))
+  df_merged = df1.append(df2.fillna(""))
 
     
   def format_currency(val):
