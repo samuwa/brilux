@@ -272,6 +272,8 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
   # Append d1 to d2, filling missing values with empty strings
   df = pd.concat([df1, df2.fillna("")], ignore_index=True)
 
+  df = df[df['SOP Type'].isin(['Factura', 'Pedido'])]
+
     
   def format_currency(val):
       return "{:,.0f}".format(val)
