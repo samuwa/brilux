@@ -153,7 +153,7 @@ elif docs != [] and reporte == "Mensual - Pedidos":
   adf = df[df["Exchange Rate"] == 0]
 
   if adf["SOP Number"] != []:
-    with st.expander("Pedidos sin 'Exchange Rate'):
+    with st.expander("Pedidos sin 'Exchange Rate'"):
         st.write(adf["SOP Number"].unique())
   
     
