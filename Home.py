@@ -534,8 +534,8 @@ elif docs != None and bdoc != None and reporte == "Ventas Estrategia":
     customer_data = df[df['Customer Name'] == selected_customer]
     
     # Display current month purchases
-    current_month = datetime.datetime.now().month
-    current_year = datetime.datetime.now().year
+    current_month = datetime.now().month
+    current_year = datetime.now().year
     current_month_purchases = customer_data[(customer_data['Document Date'].dt.month == current_month) &
                                                 (customer_data['Document Date'].dt.year == current_year)]
     
