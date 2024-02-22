@@ -3,6 +3,8 @@ import streamlit as st
 from datetime import datetime
 import plotly.express as px
 
+st.set_page_config(layout="wide")
+
 # Cambiar productos llamados mal
 def reconcile_products(df):
     # Mapping of adapted names to original names and conversion factors
