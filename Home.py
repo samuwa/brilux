@@ -40,6 +40,31 @@ def reconcile_products(df):
 def keep_until_first_quote(string):
   return string[:string.find("C.A")]
 
+def recommend_sales(customer_data, current_month, current_year):
+    past_purchases = customer_data[(customer_data['Document Date'].dt.month != current_month) |
+                                   (customer_data['Document Date'].dt.year != current_year)]
+
+    if past_purchases.empty:
+        return pd.DataFrame()
+
+    aggregation = {
+        'QTY': ['mean', 'count'],
+        'Document Date': ['max', lambda x: (pd.Timestamp('now') - max(x)).days,
+                          lambda x: (x.max() - x.min()).days / len(x.unique()) if len(x.unique()) > 1 else 0]
+    }
+    item_metrics = past_purchases.groupby('Item Description').agg(aggregation)
+    item_metrics.columns = ['Benchmark Quantity', 'Purchase Instances', 'Last Purchase Date',
+                            'Days Since Last Purchase', 'Avg Days Between Purchases']
+
+    current_month_items = customer_data[(customer_data['Document Date'].dt.month == current_month) &
+                                        (customer_data['Document Date'].dt.year == current_year)]['Item Description'].unique()
+    recommended_items = item_metrics[~item_metrics.index.isin(current_month_items)].reset_index()
+
+    recommended_items = recommended_items[['Item Description', 'Benchmark Quantity', 'Purchase Instances',
+                                           'Avg Days Between Purchases', 'Days Since Last Purchase']]
+
+    return recommended_items
+
 
 
 docs = st.sidebar.file_uploader("Montar Excel - **Pedidos CON Factura**")
@@ -47,7 +72,7 @@ bdoc = st.sidebar.file_uploader("Montar Excel - **Pedidos SIN Factura**")
 adoc = st.sidebar.file_uploader("Montar Excel - **CXC**")
 
 
-reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC"])
+reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia"])
 
 if docs != None and bdoc != None and reporte == "Diario - Pedidos":
 
@@ -463,6 +488,74 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
       excluded_documents = invalid_exchange_rates['Document Number'].tolist()
       message = f"The following document numbers had no exchange rate and were excluded from the analysis: {excluded_documents}"
       st.info(message)
+
+elif docs != None and bdoc != None and reporte == "Mensual - Pedidos":
+
+    df1 = pd.read_excel(docs)
+    df2 = pd.read_excel(bdoc)
+
+    dfs = [df1, df2]  
+
+    df = pd.concat(dfs, ignore_index=True)
+
+    df = reconcile_products(df)
+
+
+    df =df[df["SOP Type"] == "Pedido"]
+    df['Compania'] = df['Compania'].apply(keep_until_first_quote)  
+
+  # Filtrar por compañia
+    compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+
+    df = df[df["Compania"] == compania]
+
+  
+    
+    df = df[df["Exchange Rate"] > 0]
+  
+  
+  # Fila total = QTY * Precio / Exchange Rate
+  
+    df['Venta Producto ($)'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
+  
+  # Mismo analisis
+    df['Document Date'] = pd.to_datetime(df['Document Date'])
+
+    df['Salesperson ID'] = df['Salesperson ID'].astype(str)
+
+    st.title('Estrategia de ventas semanal')
+    df['Document Date'] = pd.to_datetime(df['Document Date'])
+
+    customer_names = df['Customer Name'].unique()
+    #selected_customer = st.selectbox("Select a Customer:", customer_names)
+    
+    customer_data = df[df['Customer Name'] == selected_customer]
+    
+    # Display current month purchases
+    current_month = datetime.datetime.now().month
+    current_year = datetime.datetime.now().year
+    current_month_purchases = customer_data[(customer_data['Document Date'].dt.month == current_month) &
+                                                (customer_data['Document Date'].dt.year == current_year)]
+    
+    if not current_month_purchases.empty:
+        st.write(f"Current Month Purchases for {selected_customer}:")
+        #st.dataframe(current_month_purchases)
+        st.dataframe(current_month_purchases[["SOP Number", "Document Date", "Salesperson ID", "Item Description", "Unit Price $", "QTY"]], hide_index=True)
+    else:
+        st.write("No purchases found for the current month.")
+    
+        # Generate and display recommendations
+    recommendations = recommend_sales(customer_data, current_month, current_year)
+    if not recommendations.empty:
+        st.write("Recommended Sales based on Previous Purchases:")
+        st.dataframe(recommendations[recommendations["Purchase Instances"] >= 2], hide_index=True)
+    else:
+        st.write("No recommendations available based on previous purchases.")
+
+
+
+
+    
   
 
 else:
