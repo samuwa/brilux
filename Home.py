@@ -525,11 +525,11 @@ elif docs != None and bdoc != None and reporte == "Ventas Estrategia":
 
     df['Salesperson ID'] = df['Salesperson ID'].astype(str)
 
-    st.title('Estrategia de ventas semanal')
+    st.subheader('Estrategia de ventas semanal')
     df['Document Date'] = pd.to_datetime(df['Document Date'])
 
     customer_names = df['Customer Name'].unique()
-    #selected_customer = st.selectbox("Select a Customer:", customer_names)
+    selected_customer = st.selectbox("Select a Customer:", customer_names)
     
     customer_data = df[df['Customer Name'] == selected_customer]
     
