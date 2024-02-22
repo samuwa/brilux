@@ -98,7 +98,7 @@ if docs != None and bdoc != None and reporte == "Diario - Pedidos":
   
     
   df = df[df["Exchange Rate"] > 0]
-  
+   
   
   # Fila total = QTY * Precio / Exchange Rate
   
@@ -106,7 +106,8 @@ if docs != None and bdoc != None and reporte == "Diario - Pedidos":
   
   # Mismo analisis
   df['Document Date'] = pd.to_datetime(df['Document Date'])
-
+  df_2024 = df[df['date'].dt.year == 2024]
+    
   df['Salesperson ID'] = df['Salesperson ID'].astype(str)
   
   st.subheader("Reporte del día - Solo Pedidos")
@@ -189,6 +190,7 @@ elif docs != None and bdoc != None and reporte == "Mensual - Pedidos":
   
   df['Document Date'] = pd.to_datetime(df['Document Date'])
 
+  df = df[df['date'].dt.year == 2024]  
 
   st.subheader("Reporte Mensual - Solo Pedidos")
   
