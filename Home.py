@@ -491,7 +491,7 @@ elif adoc!= None and bdoc != None and reporte == "CXC":
       message = f"The following document numbers had no exchange rate and were excluded from the analysis: {excluded_documents}"
       st.info(message)
 
-elif docs != None and bdoc != None and reporte == "Mensual - Pedidos":
+elif docs != None and bdoc != None and reporte == "Ventas Estrategia":
 
     df1 = pd.read_excel(docs)
     df2 = pd.read_excel(bdoc)
