@@ -106,7 +106,7 @@ if docs != None and bdoc != None and reporte == "Diario - Pedidos":
   
   # Mismo analisis
   df['Document Date'] = pd.to_datetime(df['Document Date'])
-  df_2024 = df[df['date'].dt.year == 2024]
+  df_2024 = df[df['Document Date'].dt.year == 2024]
     
   df['Salesperson ID'] = df['Salesperson ID'].astype(str)
   
@@ -190,7 +190,7 @@ elif docs != None and bdoc != None and reporte == "Mensual - Pedidos":
   
   df['Document Date'] = pd.to_datetime(df['Document Date'])
 
-  df = df[df['date'].dt.year == 2024]  
+  df = df[df['Document Date'].dt.year == 2024]  
 
   st.subheader("Reporte Mensual - Solo Pedidos")
   
