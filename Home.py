@@ -42,38 +42,6 @@ def clean_sales_data(df1, df2):
     return df_filtered
 
 
-def reconcile_products(df):
-    # Mapping of adapted names to original names and conversion factors
-    name_map = {
-        'Servilletas BRILUX Disp. Pequeño .200': 'Servilletas BRILUX Disp. Peq. 16X200',
-        'Papel Higiénico Cherry 300 H': 'Papel Higiénico Cherry 300 12x4',
-        'Papel Higiénico TESSA 800- 200H': 'Papel Higiénico TESSA 800 12x4',
-        'Papel Higiénico TESSA 1200- 300H': 'Papel Higiénico TESSA 1200 12x4',
-        'Servilletas BRILUX De Mesa 100': 'Servilletas BRILUX De Mesa 12X100',
-        'Toalla BRILUX Intercalada Blanca 180': 'Toalla BRILUX Intercalada Blanca 12X180'
-    }
-
-    conversion_factors = {
-        'Servilletas BRILUX Disp. Pequeño .200': 16,
-        'Papel Higiénico Cherry 300 H': 12,
-        'Papel Higiénico TESSA 800- 200H': 12,
-        'Papel Higiénico TESSA 1200- 300H': 12,
-        'Servilletas BRILUX De Mesa 100': 12,
-        'Toalla BRILUX Intercalada Blanca 180': 12
-    }
-
-    # Iterate over the DataFrame rows
-    for index, row in df.iterrows():
-        # Use "Item Description" instead of "Product"
-        if row['Item Description'] in name_map:
-            # Update the item description to the original name
-            df.at[index, 'Item Description'] = name_map[row['Item Description']]
-            # Adjust the quantity by dividing it by the conversion factor and round to 0 decimals
-            df.at[index, 'QTY'] = round(row['QTY'] / conversion_factors[row['Item Description']], 0)
-            # Multiply the Unit Price by the conversion factor for the same row
-            df.at[index, 'Unit Price'] = round(row['Unit Price'] * conversion_factors[row['Item Description']], 2)
-
-    return df
 
 
 # Cambiar productos llamados mal
