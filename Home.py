@@ -184,7 +184,7 @@ elif reporte == "Mensual - Pedidos":
   total_sales = filtered_data['Venta Producto ($)'].sum()
   col2.metric(label="Ventas Totales", value=f"$ {total_sales:,.0f}")
 
-  filtered_data_2 = df[df["Item Description"].apply(fc.filter_prefixes)]
+  filtered_data_2 = filtered_data[filtered_data["Item Description"].apply(fc.filter_prefixes)]
   total_qty = filtered_data_2["QTY"].sum()
   col3.metric("Bultos Vendidos (Papel, Servilletas y Toalla)", total_qty)
 
