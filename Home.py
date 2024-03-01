@@ -47,7 +47,7 @@ if con_factura != None:
 
 if sin_factura != None:
     st.session_state.df_sin = pd.read_excel(sin_factura)
-    st.session_state.df_sin_cxc = pd.read_excel(sin_factura)
+    #st.session_state.df_sin_cxc = pd.read_excel(sin_factura)
     st.session_state.df_sin = st.session_state.df_sin[st.session_state.df_sin["SOP Type"] == "Pedido"]
     st.session_state.df = st.session_state.df[~st.session_state.df['SOP Number'].astype(str).str.startswith('P')]
     st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[st.session_state.df_sin_cxc["SOP Type"] == "Pedido"]
