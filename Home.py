@@ -49,6 +49,7 @@ if sin_factura != None:
     st.session_state.df_sin = pd.read_excel(sin_factura)
     st.session_state.df_sin_cxc = pd.read_excel(sin_factura)
     st.session_state.df_sin = st.session_state.df_sin[st.session_state.df_sin["SOP Type"] == "Pedido"]
+    st.session_state.df = st.session_state.df[~st.session_state.df['SOP Number'].astype(str).str.startswith('P')]
     st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[st.session_state.df_sin_cxc["SOP Type"] == "Pedido"]
     st.session_state.df_sin["QTY"] = st.session_state.df_sin["QTY"].round(0).astype(int)
 
@@ -65,7 +66,7 @@ if isinstance(st.session_state.df_sin, pd.DataFrame) and isinstance(st.session_s
     df = st.session_state.df_pedidos
 
     df = df[df["SOP Type"] == "Pedido"]
-    df = df[~df['SOP Number'].astype(str).str.startswith('P')]
+    
 
     df["Compania"] = df["Compania"].apply(fc.keep_until_first_quote)
 
