@@ -186,7 +186,7 @@ elif reporte == "Mensual - Pedidos":
 
   filtered_data_2 = filtered_data[filtered_data["Item Description"].apply(fc.filter_prefixes)]
   total_qty = filtered_data_2["QTY"].sum()
-  col3.metric("Bultos Vendidos (Papel, Servilletas y Toalla)", total_qty)
+  col3.metric("Bultos Vendidos (Papel, Servilletas y Toalla)", f"{total_qty:,.0f}")
 
 
   # Unidades por producto (remains the same)
