@@ -106,3 +106,27 @@ def recommend_sales(customer_data, current_month, current_year):
 def filter_prefixes(description):
     prefixes = ['Papel', 'Servilletas', 'Toalla']
     return any(description.startswith(prefix) for prefix in prefixes)
+
+
+def preprocess_data(df, inicio=inicio, cierre=cierre):
+    # Convert 'Document Date' to datetime format
+
+    df['Document Date'] = pd.to_datetime(df['Document Date'])
+    # df = df[df["Document Date"] >= "20240201"]
+    # df = df[df["Document Date"] <= "20240301"]
+
+    inicio = pd.to_datetime(inicio)
+    cierre = pd.to_datetime(cierre)
+    df = df[df["Document Date"] >= inicio]
+    df = df[df["Document Date"] <= cierre]
+    # Calculate 'Venta Producto ($)'
+    df['Venta Producto ($)'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
+
+    # Use a case-insensitive regular expression to replace variations of "AUTOMERCADOS PLAZA'S"
+    # This will match "AUTOMERCADOS PLAZA'S" and any characters that follow, replacing it with "Automercados Plaza"
+    df['Customer Name'] = df['Customer Name'].str.replace(r"(?i)AUTOMERCADOS PLAZA.*", "Automercados Plaza", regex=True)
+
+    # Filter rows where 'SOP Type' is "Pedido"
+    df = df[df['SOP Type'] == "Pedido"]
+
+    return df
