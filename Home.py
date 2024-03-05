@@ -471,6 +471,14 @@ elif reporte == "Ventas Estrategia":
 
 elif reporte == "Ventas SCI":
 
+    col1, col2 = st.columns(2)
+
+    now = datetime.now()
+
+    first_day_of_current_month = datetime(now.year, now.month, 1)
+
+    inicio = col1.date_input("Fecha de Inicio", value=first_day_of_current_month)
+    cierre = col2.date_input("Fecha de Cierre", value=datetime.today())
     df_viz = fc.preprocess_data(df.copy())
 
     df_filtered = df_viz[df_viz['Salesperson ID'].str.contains("SCI", na=False)]
