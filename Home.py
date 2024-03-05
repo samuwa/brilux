@@ -90,7 +90,7 @@ if isinstance(st.session_state.df_sin_cxc, pd.DataFrame) and isinstance(st.sessi
 
 
 # Seleccionar un reporte a visualizar
-reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia"])
+reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia", "Ventas SCI"])
 
 
 
@@ -468,6 +468,86 @@ elif reporte == "Ventas Estrategia":
         st.dataframe(recommendations[recommendations["Purchase Instances"] >= 2], hide_index=True)
     else:
         st.write("No recommendations available based on previous purchases.")
+
+elif reporte == "Ventas SCI":
+
+    df_viz = fc.preprocess_data(df.copy())
+
+    df_filtered = df_viz[df_viz['Salesperson ID'].str.contains("SCI", na=False)]
+
+    matching_rows = df_viz[~df_viz['Salesperson ID'].str.contains("SCI", na=False)]
+    matching_rows = matching_rows[matching_rows["Customer Name"].isin(df_filtered["Customer Name"])]
+
+# Step 3: Append rows
+# Append the filtered rows from df1 to df2
+    df_filtered = pd.concat([df_filtered, matching_rows], ignore_index=True)
+
+    # Display overall sales metrics based on filtered data
+    #st.header("Overall Sales Metrics (Filtered by SCI)")
+    ventas_totales = df_filtered['Venta Producto ($)'].sum()
+    st.metric("Ventas Totales por SCI", f"${ventas_totales:,.0f}")
+
+    # Group by Salesperson ID (filtered)
+
+    col1, col2 = st.columns([2,4.5])
+
+    col1.subheader("Ventas por vendedor")
+    ventas_por_salesperson = df_filtered.groupby('Salesperson ID')['Venta Producto ($)'].sum().reset_index().sort_values(by='Venta Producto ($)', ascending=False)
+    ventas_por_salesperson['Venta Producto ($)'] = ventas_por_salesperson['Venta Producto ($)'].apply(lambda x: f"{x:,.0f}")
+
+# Rename 'Venta Producto ($)' to 'Ventas por Vendedor'
+    ventas_por_salesperson.rename(columns={'Venta Producto ($)': 'Ventas por Vendedor ($)'}, inplace=True)
+
+# Display the DataFrame
+    col1.dataframe(ventas_por_salesperson, hide_index=True)
+
+    # col1.write("El **75%** de las ventas SCI consisten de:")
+    # col1.write(" 1. Automercados Plaza")
+    # col1.write(" 2. Comercializadora Monti Sin Límites")
+    # col1.write(" 3. Redvital")
+    # col1.write(" 4. Comercializadora Centro de Guarenas (NUEVO)")
+    # col1.write(" 5. Automercados Luz")
+
+    # Group by Customer Name (filtered)
+    col2.subheader("Ventas por cliente (por SCI)")
+    ventas_por_customer = df_filtered.groupby('Customer Name')['Venta Producto ($)'].sum().reset_index().sort_values(by='Venta Producto ($)', ascending=False)
+    ventas_por_customer['Venta Producto ($)'] = ventas_por_customer['Venta Producto ($)'].apply(lambda x: f"{x:,.0f}")
+
+    # Rename 'Venta Producto ($)' to 'Ventas por Vendedor'
+    ventas_por_customer.rename(columns={'Venta Producto ($)': 'Ventas por Cliente ($)'}, inplace=True)
+
+    # Display the DataFrame
+
+    df_sorted = df.sort_values(by=['Customer Name', 'Document Date'])
+
+    # Step 2: Determine the first salesperson for each customer
+    first_salesperson_per_customer = df_sorted.groupby('Customer Name').first()['Salesperson ID']
+
+    # Step 3: Check if the first salesperson for each customer contains 'SCI'
+    customer_discovered_by_sci = first_salesperson_per_customer.str.contains("SCI").reset_index()
+    customer_discovered_by_sci.rename(columns={'Salesperson ID': 'Discovered by SCI'}, inplace=True)
+
+    # Step 4: Merge this information back into your 'ventas_por_customer' DataFrame
+    # Ensure ventas_por_customer is calculated before this step
+    ventas_por_customer = ventas_por_customer.merge(customer_discovered_by_sci, on='Customer Name', how='left')
+
+    # Step 5: Convert the boolean 'Discovered by SCI' column to a more readable format if desired
+    ventas_por_customer['Discovered by SCI'] = ventas_por_customer['Discovered by SCI'].map({True: 'Yes', False: 'No'})
+    col2.dataframe(ventas_por_customer, hide_index=True, height=900)
+
+    customers_discovered_by_sci_count = ventas_por_customer[ventas_por_customer['Discovered by SCI'] == 'Yes'].shape[0]
+
+    # Calculate the total sales from customers discovered by SCI
+    # Ensure that 'Venta Producto ($)' column is in a numeric format for accurate summation
+
+    ventas_por_customer['Ventas por Cliente ($)'] = pd.to_numeric(ventas_por_customer['Ventas por Cliente ($)'].str.replace(',', ''), errors='coerce')
+    sales_from_customers_discovered_by_sci_sum = ventas_por_customer[ventas_por_customer['Discovered by SCI'] == 'Yes']['Ventas por Cliente ($)'].sum()
+
+    # Display metrics in Streamlit
+    col1.markdown("##")
+    col1.metric("Clientes descubiertos por SCI", customers_discovered_by_sci_count)
+    col1.metric("Ventas a clientes descubiertos por SCI ($)", f"${sales_from_customers_discovered_by_sci_sum:,.0f}")
+
 
 
 
