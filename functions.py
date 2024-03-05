@@ -108,7 +108,7 @@ def filter_prefixes(description):
     return any(description.startswith(prefix) for prefix in prefixes)
 
 
-def preprocess_data(df, inicio=inicio, cierre=cierre):
+def preprocess_data(df, inicio, cierre):
     # Convert 'Document Date' to datetime format
 
     df['Document Date'] = pd.to_datetime(df['Document Date'])
