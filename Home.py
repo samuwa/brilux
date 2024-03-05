@@ -325,6 +325,9 @@ elif reporte == "CXC":
     #st.metric("Total CXC", f"${total_current:,.2f}")
 
     st.subheader("Resumen de CXC por Cliente")
+    grouped_combined_sorted["Total_Original_Amount_USD"] = grouped_combined_sorted["Total_Original_Amount_USD"].round(2)
+    grouped_combined_sorted["Total_Current_Amount_USD"] = grouped_combined_sorted["Total_Current_Amount_USD"].round(2)
+    
     st.dataframe(grouped_combined_sorted, use_container_width=True)
 
     #
