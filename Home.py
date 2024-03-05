@@ -359,6 +359,11 @@ elif reporte == "CXC":
     customer_name = st.selectbox("Selecciona un Cliente", combined_df["Customer Name"].unique())
     customer_accounts = combined_df[combined_df["Customer Name"] == customer_name]
 
+    customer_accounts["Current Trx Amount USD"] = customer_accounts["Current Trx Amount USD"].round(2)
+    customer_accounts["Original Trx Amount USD"] = customer_accounts["Original Trx Amount USD"].round(2)
+    customer_accounts["Document Number"] = customer_accounts["Document Number"].astype(str)
+    
+    
     st.dataframe(customer_accounts[["SOP Type","Document Number","Original Trx Amount USD", "Current Trx Amount USD", "Due Date", "days past due"]], use_container_width=True)
 
 
