@@ -491,7 +491,7 @@ elif reporte == "Ventas SCI":
 
     inicio = col1.date_input("Fecha de Inicio", value=first_day_of_current_month)
     cierre = col2.date_input("Fecha de Cierre", value=datetime.today())
-    df_viz = fc.preprocess_data(df.copy())
+    df_viz = fc.preprocess_data(df.copy(), inicio, cierre)
 
     df_filtered = df_viz[df_viz['Salesperson ID'].str.contains("SCI", na=False)]
 
