@@ -42,7 +42,8 @@ c_x_c = st.sidebar.file_uploader("Montar Excel - **CXC**")
 
 if con_factura != None:
     st.session_state.df_con = pd.read_excel(con_factura)
-    st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Pedido"]
+    #st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Pedido"]
+    st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Factura"]
     st.session_state.df_con["QTY"] = st.session_state.df_con["QTY"].round(0).astype(int)
 
 if sin_factura != None:
