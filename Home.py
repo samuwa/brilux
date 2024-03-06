@@ -67,7 +67,7 @@ if isinstance(st.session_state.df_sin, pd.DataFrame) and isinstance(st.session_s
 
     df = st.session_state.df_pedidos
 
-    df = df[df["SOP Type"] == "Factura"]
+    #df = df[df["SOP Type"] == "Factura"]
     
 
     df["Compania"] = df["Compania"].apply(fc.keep_until_first_quote)
