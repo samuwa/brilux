@@ -409,8 +409,8 @@ elif reporte == "CXC":
     categoria = st.selectbox("Selecciona una categoría", combined_df["Categoría de Vencimiento"].unique())
 
     combined_df["Document Number"] = combined_df["Document Number"].astype(str)
-    #combined_df["Original Trx Amount"] = combined_df["Original Trx Amount"].round(2)
-    #combined_df["Current Trx Amount"] = combined_df["Current Trx Amount"].round(2)
+    combined_df["Original Trx Amount USD"] = combined_df["Original Trx Amount"].round(2)
+    combined_df["Current Trx Amount USD"] = combined_df["Current Trx Amount"].round(2)
 
     st.dataframe(combined_df[combined_df["Categoría de Vencimiento"] == categoria][["Customer Name", "Document Number", "Original Trx Amount USD", "Current Trx Amount USD","Due Date", "days past due"]], use_container_width=True)
     #[["Customer Name", "Original Trx Amount USD", "Current Trx Amount","Due Date", "days past due"]]
