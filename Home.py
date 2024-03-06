@@ -371,7 +371,7 @@ elif reporte == "CXC":
     customer_accounts["Document Number"] = customer_accounts["Document Number"].astype(str)
 
 
-    st.write(f"Deuda acumulada: ${customer_accounts["Current Trx Amount USD"].sum():,.2f}")
+    st.write(f"Deuda acumulada: ${customer_accounts['Current Trx Amount USD'].sum():,.2f}")
     
     
     st.dataframe(customer_accounts[["SOP Type","Document Number","Original Trx Amount USD", "Current Trx Amount USD", "Due Date", "days past due"]], use_container_width=True)
