@@ -67,7 +67,7 @@ if isinstance(st.session_state.df_sin, pd.DataFrame) and isinstance(st.session_s
 
     df = st.session_state.df_pedidos
 
-    df = df[df["SOP Type"] == "Pedido"]
+    df = df[df["SOP Type"] == "Factura"]
     
 
     df["Compania"] = df["Compania"].apply(fc.keep_until_first_quote)
@@ -76,7 +76,7 @@ if isinstance(st.session_state.df_sin, pd.DataFrame) and isinstance(st.session_s
 
     #df = df[df["Exchange Rate"] > 0]
 
-    #df["Exchange Rate"] = df["Exchange Rate"].replace(0,1)
+    df["Exchange Rate"] = df["Exchange Rate"].replace(0,1)
 
     df['Venta Producto ($)'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
 
