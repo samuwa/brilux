@@ -306,6 +306,10 @@ elif reporte == "CXC":
 
     combined_df["Document Date"] = combined_df["Document Date"].dt.date
 
+    compania = st.selectbox("Seleccionar Compañía", combined_df["Compania"].unique())
+
+    combined_df = combined_df[combined_df["Compania"] == compania]
+
     # print(combined_df)
     # Group by la deuda
 
@@ -365,6 +369,9 @@ elif reporte == "CXC":
     customer_accounts["Current Trx Amount USD"] = customer_accounts["Current Trx Amount USD"].round(2)
     customer_accounts["Original Trx Amount USD"] = customer_accounts["Original Trx Amount USD"].round(2)
     customer_accounts["Document Number"] = customer_accounts["Document Number"].astype(str)
+
+
+    st.write(f"Deuda acumulada: ${customer_accounts["Current Trx Amount USD].sum():,.2f}")
     
     
     st.dataframe(customer_accounts[["SOP Type","Document Number","Original Trx Amount USD", "Current Trx Amount USD", "Due Date", "days past due"]], use_container_width=True)
@@ -414,6 +421,10 @@ elif reporte == "CXC":
 
     st.dataframe(combined_df[combined_df["Categoría de Vencimiento"] == categoria][["Customer Name", "Document Number", "Original Trx Amount USD", "Current Trx Amount USD","Due Date", "days past due"]], use_container_width=True)
     #[["Customer Name", "Original Trx Amount USD", "Current Trx Amount","Due Date", "days past due"]]
+
+    st.subheader("Todas las cuentas")
+
+    st.dataframe(combined_df[["Customer Name", "Document Number", "Original Trx Amount USD", "Current Trx Amount USD","Due Date", "days past due"]].sort_values("Due Date", ascending=False), use_container_width=True)
 
 
 elif reporte == "Ventas Estrategia":
