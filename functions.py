@@ -110,7 +110,7 @@ def filter_prefixes(description):
 
 def preprocess_data(df, inicio, cierre):
     # Convert 'Document Date' to datetime format
-
+    df = df[df['SOP Type'] == "Factura"]
     df['Document Date'] = pd.to_datetime(df['Document Date'])
     # df = df[df["Document Date"] >= "20240201"]
     # df = df[df["Document Date"] <= "20240301"]
@@ -127,6 +127,6 @@ def preprocess_data(df, inicio, cierre):
     df['Customer Name'] = df['Customer Name'].str.replace(r"(?i)AUTOMERCADOS PLAZA.*", "Automercados Plaza", regex=True)
 
     # Filter rows where 'SOP Type' is "Factura"
-    df = df[df['SOP Type'] == "Factura"]
+    
 
     return df
