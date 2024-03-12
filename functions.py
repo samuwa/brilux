@@ -127,6 +127,6 @@ def preprocess_data(df, inicio, cierre):
     df['Customer Name'] = df['Customer Name'].str.replace(r"(?i)AUTOMERCADOS PLAZA.*", "Automercados Plaza", regex=True)
 
     # Filter rows where 'SOP Type' is "Pedido"
-    df = df[df['SOP Type'] == "Pedido"]
+    df = df[df['SOP Type'] == "Factura"]
 
     return df
