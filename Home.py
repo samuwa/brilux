@@ -126,7 +126,7 @@ if reporte == "Diario - Pedidos":
   st.write("**Unidades Vendidas por Producto**")
   product_qty = filtered_data.groupby('Item Description')['QTY'].sum().reset_index()
   product_qty = product_qty.sort_values("QTY", ascending=False)
-  st.table(product_qty)
+  st.dataframe(product_qty, use_container_width=True, hide_index=True)
 
   # Adapted: Ventas por vendedor using "Venta Producto ($)"
   st.write("**Ventas por Vendedor**")
