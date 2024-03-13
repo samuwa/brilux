@@ -24,7 +24,7 @@ def clean_sales_data(df1, df2):
     df_filtered = df_combined[(df_combined['Exchange Rate'] != 0) & (df_combined['Exchange Rate'].notna())]
 
     # Filter 'SOP Type' to keep only "Pedido"
-    df_filtered = df_filtered[df_filtered['SOP Type'] == "Pedido"]
+    # df_filtered = df_filtered[df_filtered['SOP Type'] == "Pedido"]  || Se elimina esto porque ahora se ven facturas.
 
     # Ensure 'Unit Price' and 'Exchange Rate' are numeric
     df_filtered['Unit Price'] = pd.to_numeric(df_filtered['Unit Price'], errors='coerce')
