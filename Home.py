@@ -106,7 +106,7 @@ if reporte == "Diario - Pedidos":
   df = df[df["Compania"] == compania]
 
   df["Document Date"] = pd.to_datetime(df["Document Date"])
-  df_2024 = df[df['Document Date'].dt.year == 2024]
+  df = df[df['Document Date'].dt.year == 2024]
 
 
 
