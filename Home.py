@@ -66,7 +66,7 @@ if isinstance(st.session_state.df_sin, pd.DataFrame) and isinstance(st.session_s
     st.session_state.df_pedidos = fc.reconcile_products(pd.concat([st.session_state.df_con, st.session_state.df_sin], ignore_index=True))
 
     df = st.session_state.df_pedidos
-
+    st.write(df)
     #df = df[df["SOP Type"] == "Factura"]
     
 
@@ -117,6 +117,7 @@ if reporte == "Diario - Pedidos":
   selected_date = col1.date_input("Selecciona un día", value=pd.to_datetime('today'))
 
   filtered_data = df[df['Document Date'].dt.date == selected_date]
+  st.write(df)  
 
   # Adapted: Ventas Totales using "Venta Producto ($)"
   total_sales = filtered_data['Venta Producto ($)'].sum()
