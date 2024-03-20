@@ -447,6 +447,8 @@ elif reporte == "CXC":
     # combined_df["Original Trx Amount USD"] = combined_df["Original Trx Amount USD"].round(2)
     # combined_df["Current Trx Amount USD"] = combined_df["Current Trx Amount USD"].round(2)
 
+    combined_df["Due Date"] = combined_df["Due Date"].dt.date
+
     st.dataframe(combined_df[combined_df["Categoría de Vencimiento"] == categoria][["Customer Name", "Document Number", "Original Trx Amount USD", "Current Trx Amount USD","Due Date", "days past due"]], use_container_width=True)
     #[["Customer Name", "Original Trx Amount USD", "Current Trx Amount","Due Date", "days past due"]]
 
