@@ -78,7 +78,7 @@ if isinstance(st.session_state.df_sin, pd.DataFrame) and isinstance(st.session_s
 
     #df["Exchange Rate"] = df["Exchange Rate"].replace(0,1)
 
-    df['Venta Producto ($)'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
+    df['Venta $'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
 
     df['Document Date'] = pd.to_datetime(df['Document Date'])
     #df['Document Date'] = df['Document Date'].dt.date
@@ -95,7 +95,9 @@ if isinstance(st.session_state.df_sin_cxc, pd.DataFrame) and isinstance(st.sessi
 # Seleccionar un reporte a visualizar
 reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia", "Ventas SCI", "Análisis Vendedores"])
 
+compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
+df = df[df["Compania"] == compania]
 
 if reporte == "Diario - Pedidos":
 
@@ -119,8 +121,8 @@ if reporte == "Diario - Pedidos":
   filtered_data = df[df['Document Date'].dt.date == selected_date]
   
 
-  # Adapted: Ventas Totales using "Venta Producto ($)"
-  total_sales = filtered_data['Venta Producto ($)'].sum()
+  # Adapted: Ventas Totales using "Venta $"
+  total_sales = filtered_data['Venta $'].sum()
   col2.metric(label="Ventas Totales", value=f"$ {total_sales:,.0f}")
 
   # Unidades por producto (remains the same)
@@ -129,15 +131,15 @@ if reporte == "Diario - Pedidos":
   product_qty = product_qty.sort_values("QTY", ascending=False)
   st.table(product_qty)
 
-  # Adapted: Ventas por vendedor using "Venta Producto ($)"
+  # Adapted: Ventas por vendedor using "Venta $"
   st.write("**Ventas por Vendedor**")
-  sales_by_salesperson = filtered_data.groupby('Salesperson ID')['Venta Producto ($)'].sum().reset_index(name='Total Sales Value ($)')
+  sales_by_salesperson = filtered_data.groupby('Salesperson ID')['Venta $'].sum().reset_index(name='Total Sales Value ($)')
   sales_by_salesperson = sales_by_salesperson.sort_values("Total Sales Value ($)", ascending=False).style.format({'Total Sales Value ($)': '{:,.2f}'})
   st.table(sales_by_salesperson)
 
-  # Adapted: Ventas por cliente using "Venta Producto ($)"
+  # Adapted: Ventas por cliente using "Venta $"
   st.write("**Ventas por cliente**")
-  sales_by_customer = filtered_data.groupby('Customer Name')['Venta Producto ($)'].sum().reset_index(name='Total Sales Value ($)')
+  sales_by_customer = filtered_data.groupby('Customer Name')['Venta $'].sum().reset_index(name='Total Sales Value ($)')
   sales_by_customer = sales_by_customer.sort_values("Total Sales Value ($)", ascending=False).style.format({'Total Sales Value ($)': '{:,.2f}'})
   st.table(sales_by_customer)
 
@@ -162,9 +164,9 @@ if reporte == "Diario - Pedidos":
 elif reporte == "Mensual - Pedidos":
 
 
-  compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+  # compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-  df = df[df["Compania"] == compania]
+  # df = df[df["Compania"] == compania]
 
 
 
@@ -184,8 +186,8 @@ elif reporte == "Mensual - Pedidos":
   # Filter Data for Selected Month
   filtered_data = df[df['Document Date'].dt.month == selected_month_num]
 
-  # Adapted: Ventas Totales using "Venta Producto ($)"
-  total_sales = filtered_data['Venta Producto ($)'].sum()
+  # Adapted: Ventas Totales using "Venta $"
+  total_sales = filtered_data['Venta $'].sum()
   col2.metric(label="Ventas Totales", value=f"$ {total_sales:,.0f}")
 
   filtered_data_2 = filtered_data[filtered_data["Item Description"].apply(fc.filter_prefixes)]
@@ -199,15 +201,15 @@ elif reporte == "Mensual - Pedidos":
   product_qty = product_qty.sort_values("QTY", ascending=False)
   st.table(product_qty)
 
-  # Adapted: Ventas por vendedor using "Venta Producto ($)"
+  # Adapted: Ventas por vendedor using "Venta $"
   st.write("**Ventas por Vendedor**")
-  sales_by_salesperson = filtered_data.groupby('Salesperson ID')['Venta Producto ($)'].sum().reset_index(name='Total Sales Value ($)')
+  sales_by_salesperson = filtered_data.groupby('Salesperson ID')['Venta $'].sum().reset_index(name='Total Sales Value ($)')
   sales_by_salesperson = sales_by_salesperson.sort_values("Total Sales Value ($)", ascending=False).style.format({'Total Sales Value ($)': '{:,.2f}'})
   st.table(sales_by_salesperson)
 
-  # Adapted: Ventas por cliente using "Venta Producto ($)"
+  # Adapted: Ventas por cliente using "Venta $"
   st.write("**Ventas por cliente**")
-  sales_by_customer = filtered_data.groupby('Customer Name')['Venta Producto ($)'].sum().reset_index(name='Total Sales Value ($)')
+  sales_by_customer = filtered_data.groupby('Customer Name')['Venta $'].sum().reset_index(name='Total Sales Value ($)')
   sales_by_customer = sales_by_customer.sort_values("Total Sales Value ($)", ascending=False).style.format({'Total Sales Value ($)': '{:,.2f}'})
   st.table(sales_by_customer)
 
@@ -239,16 +241,16 @@ elif reporte == "Mensual - Pedidos":
       # Filter data for each specific day from the sorted DataFrame
       daily_data = customer_data_sorted[customer_data_sorted['Document Date'] == date]
 
-      # Group by 'Item Description' and calculate sum of 'QTY' and 'Venta Producto ($)'
-      daily_summary = daily_data.groupby('Item Description').agg({'QTY': 'sum', 'Venta Producto ($)': 'sum'}).reset_index()
+      # Group by 'Item Description' and calculate sum of 'QTY' and 'Venta $'
+      daily_summary = daily_data.groupby('Item Description').agg({'QTY': 'sum', 'Venta $': 'sum'}).reset_index()
 
       # Append a TOTAL row
-      total_sales = daily_summary['Venta Producto ($)'].sum()
-      total_row = pd.DataFrame([['TOTAL', daily_summary['QTY'].sum(), total_sales]], columns=['Item Description', 'QTY', 'Venta Producto ($)'])
+      total_sales = daily_summary['Venta $'].sum()
+      total_row = pd.DataFrame([['TOTAL', daily_summary['QTY'].sum(), total_sales]], columns=['Item Description', 'QTY', 'Venta $'])
       daily_summary = pd.concat([daily_summary, total_row], ignore_index=True)
 
-      # Format the 'Venta Producto ($)' column
-      daily_summary['Venta Producto ($)'] = daily_summary.apply(lambda x: f"$ {x['Venta Producto ($)']:,.2f}" if x['Item Description'] == 'TOTAL' else int(x['Venta Producto ($)']), axis=1)
+      # Format the 'Venta $' column
+      daily_summary['Venta $'] = daily_summary.apply(lambda x: f"$ {x['Venta $']:,.2f}" if x['Item Description'] == 'TOTAL' else int(x['Venta $']), axis=1)
 
       # Ensure 'QTY' column is integer for all but the TOTAL row
       daily_summary['QTY'] = daily_summary['QTY'].astype(int, errors='ignore')
@@ -460,7 +462,7 @@ elif reporte == "Ventas Estrategia":
 
   # Fila total = QTY * Precio / Exchange Rate
 
-    df['Venta Producto ($)'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
+    df['Venta $'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
 
   # Mismo analisis
     df['Document Date'] = pd.to_datetime(df['Document Date'])
@@ -519,7 +521,7 @@ elif reporte == "Ventas SCI":
 
     # Display overall sales metrics based on filtered data
     #st.header("Overall Sales Metrics (Filtered by SCI)")
-    ventas_totales = df_filtered['Venta Producto ($)'].sum()
+    ventas_totales = df_filtered['Venta $'].sum()
     st.metric("Ventas Totales por SCI", f"${ventas_totales:,.0f}")
 
     # Group by Salesperson ID (filtered)
@@ -527,11 +529,11 @@ elif reporte == "Ventas SCI":
     col1, col2 = st.columns([2,4.5])
 
     col1.subheader("Ventas por vendedor")
-    ventas_por_salesperson = df_filtered.groupby('Salesperson ID')['Venta Producto ($)'].sum().reset_index().sort_values(by='Venta Producto ($)', ascending=False)
-    ventas_por_salesperson['Venta Producto ($)'] = ventas_por_salesperson['Venta Producto ($)'].apply(lambda x: f"{x:,.0f}")
+    ventas_por_salesperson = df_filtered.groupby('Salesperson ID')['Venta $'].sum().reset_index().sort_values(by='Venta $', ascending=False)
+    ventas_por_salesperson['Venta $'] = ventas_por_salesperson['Venta $'].apply(lambda x: f"{x:,.0f}")
 
-# Rename 'Venta Producto ($)' to 'Ventas por Vendedor'
-    ventas_por_salesperson.rename(columns={'Venta Producto ($)': 'Ventas por Vendedor ($)'}, inplace=True)
+# Rename 'Venta $' to 'Ventas por Vendedor'
+    ventas_por_salesperson.rename(columns={'Venta $': 'Ventas por Vendedor ($)'}, inplace=True)
 
 # Display the DataFrame
     col1.dataframe(ventas_por_salesperson, hide_index=True)
@@ -545,11 +547,11 @@ elif reporte == "Ventas SCI":
 
     # Group by Customer Name (filtered)
     col2.subheader("Ventas por cliente (por SCI)")
-    ventas_por_customer = df_filtered.groupby('Customer Name')['Venta Producto ($)'].sum().reset_index().sort_values(by='Venta Producto ($)', ascending=False)
-    ventas_por_customer['Venta Producto ($)'] = ventas_por_customer['Venta Producto ($)'].apply(lambda x: f"{x:,.0f}")
+    ventas_por_customer = df_filtered.groupby('Customer Name')['Venta $'].sum().reset_index().sort_values(by='Venta $', ascending=False)
+    ventas_por_customer['Venta $'] = ventas_por_customer['Venta $'].apply(lambda x: f"{x:,.0f}")
 
-    # Rename 'Venta Producto ($)' to 'Ventas por Vendedor'
-    ventas_por_customer.rename(columns={'Venta Producto ($)': 'Ventas por Cliente ($)'}, inplace=True)
+    # Rename 'Venta $' to 'Ventas por Vendedor'
+    ventas_por_customer.rename(columns={'Venta $': 'Ventas por Cliente ($)'}, inplace=True)
 
     # Display the DataFrame
 
@@ -573,7 +575,7 @@ elif reporte == "Ventas SCI":
     customers_discovered_by_sci_count = ventas_por_customer[ventas_por_customer['Discovered by SCI'] == 'Yes'].shape[0]
 
     # Calculate the total sales from customers discovered by SCI
-    # Ensure that 'Venta Producto ($)' column is in a numeric format for accurate summation
+    # Ensure that 'Venta $' column is in a numeric format for accurate summation
 
     ventas_por_customer['Ventas por Cliente ($)'] = pd.to_numeric(ventas_por_customer['Ventas por Cliente ($)'].str.replace(',', ''), errors='coerce')
     sales_from_customers_discovered_by_sci_sum = ventas_por_customer[ventas_por_customer['Discovered by SCI'] == 'Yes']['Ventas por Cliente ($)'].sum()
