@@ -639,7 +639,7 @@ elif reporte == "Análisis Vendedores":
             # Display Results for the current salesperson
     
             # Clientes no vendidos
-            cnv = df[~df["Customer Name"].isin(sales_per_customer["Customer Name"])]
+            cnv = salesperson_data[~salesperson_data["Customer Name"].isin(sales_per_customer["Customer Name"])]
     
             col1, col2, col3, col4, col5 = st.columns(5)
             col4.metric(f"Clientes Nuevos", new_customers_count)
