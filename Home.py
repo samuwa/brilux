@@ -97,11 +97,13 @@ if isinstance(st.session_state.df_sin_cxc, pd.DataFrame) and isinstance(st.sessi
 # Seleccionar un reporte a visualizar
 reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia", "Ventas SCI", "Análisis Vendedores"])
 
-compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-df = df[df["Compania"] == compania]
 
 if reporte == "Diario - Pedidos":
+
+  compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+
+  df = df[df["Compania"] == compania]  
 
 
   # Filtrar por compañia
@@ -267,7 +269,10 @@ elif reporte == "Mensual - Pedidos":
 
 elif reporte == "CXC":
 
-    cxc = st.session_state.df_cxc
+    compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+
+
+    cxc = st.session_state.df_cxc[st.session_state.df_cxc["Compania"] == compania]
     pedidos = st.session_state.df_sin_cxc
     cxc_clean = cxc.dropna(subset=['Exchange Rate', 'Current Trx Amount', 'Original Trx Amount'])
     cxc_clean = cxc_clean[cxc_clean['Exchange Rate'] != 0]
