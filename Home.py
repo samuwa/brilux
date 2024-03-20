@@ -80,6 +80,8 @@ if isinstance(st.session_state.df_sin, pd.DataFrame) and isinstance(st.session_s
 
     df['Venta $'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
 
+    df["Venta $"] = df["Venta $"].astype(int)
+
     df['Document Date'] = pd.to_datetime(df['Document Date'])
     #df['Document Date'] = df['Document Date'].dt.date
     df['Salesperson ID'] = df['Salesperson ID'].astype(str)
