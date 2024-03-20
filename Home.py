@@ -394,6 +394,7 @@ elif reporte == "CXC":
     customer_accounts["Current Trx Amount USD"] = customer_accounts["Current Trx Amount USD"].round(2)
     customer_accounts["Original Trx Amount USD"] = customer_accounts["Original Trx Amount USD"].round(2)
     customer_accounts["Document Number"] = customer_accounts["Document Number"].astype(str)
+    customer_accounts["Document Date"] = pd.to_datetime(customer_accounts["Document Date"])
     customer_accounts["Document Date"] = customer_accounts["Document Date"].dt.date
 
 
