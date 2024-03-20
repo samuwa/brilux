@@ -86,6 +86,8 @@ if isinstance(st.session_state.df_sin, pd.DataFrame) and isinstance(st.session_s
     #df['Document Date'] = df['Document Date'].dt.date
     df['Salesperson ID'] = df['Salesperson ID'].astype(str)
 
+st.write(df)
+
 if isinstance(st.session_state.df_sin_cxc, pd.DataFrame) and isinstance(st.session_state.df_cxc, pd.DataFrame):
 
     st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[st.session_state.df_sin_cxc["SOP Type"] == "Pedido"]
