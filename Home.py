@@ -98,13 +98,16 @@ if isinstance(st.session_state.df_sin_cxc, pd.DataFrame) and isinstance(st.sessi
 # Seleccionar un reporte a visualizar
 reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia", "Ventas SCI", "Análisis Vendedores"])
 
-compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-df = df[df["Compania"] == compania]
 
 
 
 if reporte == "Diario - Pedidos":
+
+  compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+
+  df = df[df["Compania"] == compania]  
+    
 
   # compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
@@ -173,9 +176,9 @@ if reporte == "Diario - Pedidos":
 elif reporte == "Mensual - Pedidos":
 
 
-  # compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+  compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-  # df = df[df["Compania"] == compania]
+  df = df[df["Compania"] == compania]
 
 
 
