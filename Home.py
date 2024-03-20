@@ -329,6 +329,10 @@ elif reporte == "CXC":
 
     combined_df = combined_df[combined_df["Compania"] == compania]
 
+
+    combined_df["Original Trx Amount USD"] = combined_df["Original Trx Amount USD"].astype(int)
+    combined_df["Current Trx Amount USD"] = combined_df["Original Trx Amount USD"].astype(int)
+
     # print(combined_df)
     # Group by la deuda
 
@@ -336,6 +340,8 @@ elif reporte == "CXC":
         Total_Original_Amount_USD=('Original Trx Amount USD', 'sum'),
         Total_Current_Amount_USD=('Current Trx Amount USD', 'sum')
     ).reset_index()
+
+    
 
     # Calculate the percentage of the Original Amount that has been paid
     grouped_combined['Percentage Paid'] = (1 - (grouped_combined['Total_Current_Amount_USD'] / grouped_combined['Total_Original_Amount_USD'])) * 100
@@ -345,7 +351,7 @@ elif reporte == "CXC":
 
 
     total_current = grouped_combined_sorted["Total_Current_Amount_USD"].sum()
-    #st.metric("Total CXC", f"${total_current:,.2f}")
+    st.metric("Total CXC", f"${total_current:,.2f}")
 
     st.subheader("Resumen de CXC por Cliente")
     grouped_combined_sorted["Total_Original_Amount_USD"] = grouped_combined_sorted["Total_Original_Amount_USD"].round(2)
