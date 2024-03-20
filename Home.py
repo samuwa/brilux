@@ -331,7 +331,7 @@ elif reporte == "CXC":
 
 
     combined_df["Original Trx Amount USD"] = combined_df["Original Trx Amount USD"].astype(int)
-    combined_df["Current Trx Amount USD"] = combined_df["Original Trx Amount USD"].astype(int)
+    combined_df["Current Trx Amount USD"] = combined_df["Current Trx Amount USD"].astype(int)
 
     # print(combined_df)
     # Group by la deuda
@@ -394,6 +394,7 @@ elif reporte == "CXC":
     customer_accounts["Current Trx Amount USD"] = customer_accounts["Current Trx Amount USD"].round(2)
     customer_accounts["Original Trx Amount USD"] = customer_accounts["Original Trx Amount USD"].round(2)
     customer_accounts["Document Number"] = customer_accounts["Document Number"].astype(str)
+    customer_accounts["Document Date"] = customer_accounts["Document Date"].dt.date
 
 
     st.write(f"Deuda acumulada: ${customer_accounts['Current Trx Amount USD'].sum():,.2f}")
@@ -441,8 +442,8 @@ elif reporte == "CXC":
     categoria = st.selectbox("Selecciona una categoría", combined_df["Categoría de Vencimiento"].unique())
 
     combined_df["Document Number"] = combined_df["Document Number"].astype(str)
-    combined_df["Original Trx Amount USD"] = combined_df["Original Trx Amount USD"].round(2)
-    combined_df["Current Trx Amount USD"] = combined_df["Current Trx Amount USD"].round(2)
+    # combined_df["Original Trx Amount USD"] = combined_df["Original Trx Amount USD"].round(2)
+    # combined_df["Current Trx Amount USD"] = combined_df["Current Trx Amount USD"].round(2)
 
     st.dataframe(combined_df[combined_df["Categoría de Vencimiento"] == categoria][["Customer Name", "Document Number", "Original Trx Amount USD", "Current Trx Amount USD","Due Date", "days past due"]], use_container_width=True)
     #[["Customer Name", "Original Trx Amount USD", "Current Trx Amount","Due Date", "days past due"]]
