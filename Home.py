@@ -93,7 +93,7 @@ if isinstance(st.session_state.df_sin_cxc, pd.DataFrame) and isinstance(st.sessi
 
 
 # Seleccionar un reporte a visualizar
-reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia", "Ventas SCI"])
+reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia", "Ventas SCI", "Análisis Vendedores"])
 
 
 
@@ -583,7 +583,97 @@ elif reporte == "Ventas SCI":
     col1.metric("Clientes descubiertos por SCI", customers_discovered_by_sci_count)
     col1.metric("Ventas a clientes descubiertos por SCI ($)", f"${sales_from_customers_discovered_by_sci_sum:,.0f}")
 
+elif reporte == "Análisis Vendedores":
 
+    st.header("Análisis Vendedores")
+    col1, col2 = st.columns(2)
+    selected_salespersons = col1.multiselect('Select Salesperson ID', df['Salesperson ID'].unique())
+    selected_date_range = col2.date_input('Select date range', [])
+    df['Month/Year'] = df['Document Date'].dt.to_period('M')
+    st.divider()
+    
+    
+    if selected_salespersons and selected_date_range:
+    
+    
+    
+        # Convert selected_date_range to datetime64[ns]
+        start_date = pd.to_datetime(selected_date_range[0])
+        end_date = pd.to_datetime(selected_date_range[1])
+    
+        for salesperson in selected_salespersons:
+            st.subheader(f'{salesperson}')
+    
+            # Filter data for the current salesperson within the selected date range
+            filtered_data = df[(df['Salesperson ID'] == salesperson) &
+                               (df['Document Date'].between(start_date, end_date))]
+    
+            # Calculations for the current salesperson
+            ## New Customers
+            all_time_customers = df[(df['Salesperson ID'] == salesperson) & (df['Document Date'] < start_date)]['Customer Name'].unique()
+            new_customers = filtered_data[~filtered_data['Customer Name'].isin(all_time_customers)]
+            new_customers_count = new_customers['Customer Name'].nunique()
+    
+            ## Who New Customers
+            who_new_customers = new_customers[['Customer Name', 'Venta $']].groupby('Customer Name').sum().reset_index()
+    
+            ## Total Sales
+            total_sales = filtered_data['Venta $'].sum()
+    
+            ## Sales per Customer
+            sales_per_customer = filtered_data[['Customer Name', 'Venta $']].groupby('Customer Name').sum().reset_index()
+    
+    
+            # Cartera completa
+            salesperson_data = df[df["Salesperson ID"] == salesperson]
+            cartera_completa = len(salesperson_data["Customer Name"].unique())
+    
+            # Venta a nuevos clientes
+            vanc = who_new_customers["Venta $"].sum()
+    
+            # numero de clientes vendidos
+    
+            ncv = len(sales_per_customer["Customer Name"].unique())
+            # Display Results for the current salesperson
+    
+            # Clientes no vendidos
+            cnv = df[~df["Customer Name"].isin(sales_per_customer["Customer Name"])]
+    
+            col1, col2, col3, col4, col5 = st.columns(5)
+            col4.metric(f"Clientes Nuevos", new_customers_count)
+            col5.metric("Venta CLientes Nuevos", f"$ {vanc:,.0f}")
+            col2.metric("Clientes Vendidos", ncv)
+            col3.metric("Ventas Totales", f"$ {total_sales:,.0f}")
+            col1.metric("Cartera Completa (clientes)", cartera_completa)
+            st.markdown("##")
+            col1, col2, col3 = st.columns(3)
+            col2.write('Ventas de **nuevos clientes**')
+            col2.dataframe(who_new_customers.sort_values("Venta $", ascending=False), hide_index=True)
+            col1.write('Ventas de **todos los clientes**')
+            col1.dataframe(sales_per_customer.sort_values("Venta $", ascending=False), hide_index=True)
+            col3.write("CLientes **no vendidos**")
+            col3.dataframe(cnv["Customer Name"], hide_index=True)
+    
+    
+            customer_names = salesperson_data['Customer Name'].unique()
+    
+            with st.expander("Inspección Cliente"):
+                selected_customer = st.selectbox(f'Select a customer for historical behavior (Salesperson {salesperson})', customer_names)
+                if selected_customer:
+                    st.subheader(f'Historical behavior for {selected_customer}')
+    
+                    # Line chart of sum(Venta $) by months
+                    customer_sales = salesperson_data[salesperson_data['Customer Name'] == selected_customer]
+                    monthly_sales = customer_sales.groupby('Month/Year')['Venta $'].sum()
+    
+                    # Table with item description, month/year, and sum(qty)
+                    pivot_table = customer_sales.pivot_table(index='Item Description', columns='Month/Year', values='QTY', aggfunc='sum', fill_value=0)
+                    st.table(pivot_table)
+    
+            st.divider()
+    
+    else:
+        st.write('Please select a Salesperson ID and a date range to view the analysis.')
 
 
 
