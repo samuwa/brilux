@@ -678,7 +678,7 @@ elif reporte == "Análisis Vendedores":
             col1.write('Ventas de **todos los clientes**')
             col1.dataframe(sales_per_customer.sort_values("Venta $", ascending=False), hide_index=True)
             col3.write("CLientes **no vendidos**")
-            col3.dataframe(cnv["Customer Name"], hide_index=True)
+            col3.dataframe(cnv["Customer Name"].unique(), hide_index=True)
     
     
             customer_names = salesperson_data['Customer Name'].unique()
