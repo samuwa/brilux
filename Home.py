@@ -12,15 +12,15 @@ def get_data(f1):
     df = pd.read_excel(f1)
     return df
 
-# @st.cache_data
-# def get_data_sin(f2):
-#     sf = pd.read_excel(f2)
-#     return sf
+@st.cache_data
+def get_data_sin(f2):
+    sf = pd.read_excel(f2)
+    return sf
 
-# @st.chache_data
-# def get_data_csc(f3):
-#     cx = pd.read_excel(f3)
-#     return cx
+@st.chache_data
+def get_data_cxc(f3):
+    cx = pd.read_excel(f3)
+    return cx
     
 
 
@@ -78,7 +78,7 @@ if sin_factura != None:
     # st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[st.session_state.df_sin_cxc["SOP Type"] == "Pedido"]
     # st.session_state.df_sin["QTY"] = st.session_state.df_sin["QTY"].round(0).astype(int)
     
-    df_sin = get_data(sin_factura)
+    df_sin = get_data_sin(sin_factura)
     df_sin_cxc = pd.read_excel(sin_factura)
     df_sin = df_sin[df_sin["SOP Type"] == "Pedido"]
     df_sin = df_sin[~df_sin['SOP Number'].astype(str).str.startswith('P')]
@@ -89,7 +89,7 @@ if sin_factura != None:
 
 if c_x_c != None:
     # st.session_state.df_cxc = pd.read_excel(c_x_c)
-    df_csc = get_data(c_x_c)
+    df_csc = get_data_cxc(c_x_c)
     df_cxc = df_cxc[df_cxc["Current Trx Amount"] > 0]
     df_cxc['Current Trx Amount USD'] = df_cxc['Current Trx Amount'] / df_cxc['Exchange Rate']
     df_cxc['Original Trx Amount USD'] = df_cxc['Original Trx Amount'] / df_cxc['Exchange Rate']
