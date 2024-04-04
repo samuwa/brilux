@@ -89,7 +89,7 @@ if sin_factura != None:
 
 if c_x_c != None:
     # st.session_state.df_cxc = pd.read_excel(c_x_c)
-    df_csc = get_data_cxc(c_x_c)
+    df_cxc = get_data_cxc(c_x_c)
     df_cxc = df_cxc[df_cxc["Current Trx Amount"] > 0]
     df_cxc['Current Trx Amount USD'] = df_cxc['Current Trx Amount'] / df_cxc['Exchange Rate']
     df_cxc['Original Trx Amount USD'] = df_cxc['Original Trx Amount'] / df_cxc['Exchange Rate']
