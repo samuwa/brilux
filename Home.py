@@ -7,6 +7,23 @@ import numpy as np
 import plotly.graph_objects as go
 
 
+@st.cache_data
+def get_data(f1):
+    df = pd.read_excel(f1)
+    return df
+
+# @st.cache_data
+# def get_data_sin(f2):
+#     sf = pd.read_excel(f2)
+#     return sf
+
+# @st.chache_data
+# def get_data_csc(f3):
+#     cx = pd.read_excel(f3)
+#     return cx
+    
+
+
 st.set_page_config(layout="wide")
 
 
@@ -41,13 +58,15 @@ c_x_c = st.sidebar.file_uploader("Montar Excel - **CXC**")
 
 
 if con_factura != None:
-    st.session_state.df_con = pd.read_excel(con_factura)
+    # st.session_state.df_con = pd.read_excel(con_factura)
+    st.session_state.df_con = get_data(con_factura)
     st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Pedido"]
     #st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Factura"]
     st.session_state.df_con["QTY"] = st.session_state.df_con["QTY"].round(0).astype(int)
 
 if sin_factura != None:
-    st.session_state.df_sin = pd.read_excel(sin_factura)
+    # st.session_state.df_sin = pd.read_excel(sin_factura)
+    st.session_state.df_sin = get_data(sin_factura)
     st.session_state.df_sin_cxc = pd.read_excel(sin_factura)
     st.session_state.df_sin = st.session_state.df_sin[st.session_state.df_sin["SOP Type"] == "Pedido"]
     st.session_state.df_sin = st.session_state.df_sin[~st.session_state.df_sin['SOP Number'].astype(str).str.startswith('P')]
@@ -56,7 +75,8 @@ if sin_factura != None:
     st.session_state.df_sin["QTY"] = st.session_state.df_sin["QTY"].round(0).astype(int)
 
 if c_x_c != None:
-    st.session_state.df_cxc = pd.read_excel(c_x_c)
+    # st.session_state.df_cxc = pd.read_excel(c_x_c)
+    st.session_state.df_csc = get_data(c_x_c)
     st.session_state.df_cxc = st.session_state.df_cxc[st.session_state.df_cxc["Current Trx Amount"] > 0]
     st.session_state.df_cxc['Current Trx Amount USD'] = st.session_state.df_cxc['Current Trx Amount'] / st.session_state.df_cxc['Exchange Rate']
     st.session_state.df_cxc['Original Trx Amount USD'] = st.session_state.df_cxc['Original Trx Amount'] / st.session_state.df_cxc['Exchange Rate']
