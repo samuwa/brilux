@@ -21,6 +21,11 @@ def get_data_sin(f2):
 def get_data_cxc(f3):
     cx = pd.read_excel(f3)
     return cx
+
+@st.cache_data
+def get_data_sin_cxc(f3):
+    cx = pd.read_excel(f3)
+    return cx
     
 
 
@@ -57,7 +62,7 @@ if sin_factura != None:
     # st.session_state.df_sin["QTY"] = st.session_state.df_sin["QTY"].round(0).astype(int)
     
     df_sin = get_data_sin(sin_factura)
-    df_sin_cxc = get_data_sin(sin_factura)
+    df_sin_cxc = get_data_sin_cxc(sin_factura)
     df_sin = df_sin[df_sin["SOP Type"] == "Pedido"]
     df_sin = df_sin[~df_sin['SOP Number'].astype(str).str.startswith('P')]
     df_sin_cxc = df_sin_cxc[~df_sin_cxc['SOP Number'].astype(str).str.startswith('P')]
