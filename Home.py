@@ -37,6 +37,27 @@ sin_factura = st.sidebar.file_uploader("Montar Excel - **Pedidos SIN Factura**")
 c_x_c = st.sidebar.file_uploader("Montar Excel - **CXC**")
 
 
+@st.cache_data
+def get_data(f1):
+    df = pd.read_excel(f1)
+    return df
+
+@st.cache_data
+def get_data_sin(f2):
+    sf = pd.read_excel(f2)
+    return sf
+
+@st.cache_data
+def get_data_cxc(f3):
+    cx = pd.read_excel(f3)
+    return cx
+
+@st.cache_data
+def get_data_sin_cxc(f3):
+    cx = pd.read_excel(f3)
+    return cx
+    
+
 
 
 
