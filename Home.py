@@ -7,6 +7,7 @@ import numpy as np
 import plotly.graph_objects as go
     
 
+df_cxc = None
 
 st.set_page_config(layout="wide")
 
