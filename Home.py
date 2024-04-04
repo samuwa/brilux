@@ -120,10 +120,10 @@ if isinstance(df_sin, pd.DataFrame) and isinstance(df_con, pd.DataFrame):
     df['Salesperson ID'] = df['Salesperson ID'].astype(str)
 
 
-if isinstance(st.session_state.df_sin_cxc, pd.DataFrame) and isinstance(st.session_state.df_cxc, pd.DataFrame):
+if isinstance(df_sin_cxc, pd.DataFrame) and isinstance(df_cxc, pd.DataFrame):
 
-    st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[st.session_state.df_sin_cxc["SOP Type"] == "Pedido"]
-    st.session_state.df_sin_cxc = st.session_state.df_sin_cxc.drop_duplicates(subset='SOP Number', keep='first')
+    df_sin_cxc = df_sin_cxc[df_sin_cxc["SOP Type"] == "Pedido"]
+    df_sin_cxc = df_sin_cxc.drop_duplicates(subset='SOP Number', keep='first')
     # st.session_state.df_cxc_combinado =
 
 
@@ -311,8 +311,8 @@ elif reporte == "Mensual - Pedidos":
 elif reporte == "CXC":
 
 
-    cxc = st.session_state.df_cxc
-    pedidos = st.session_state.df_sin_cxc
+    cxc = df_cxc
+    pedidos = df_sin_cxc
     cxc_clean = cxc.dropna(subset=['Exchange Rate', 'Current Trx Amount', 'Original Trx Amount'])
     cxc_clean = cxc_clean[cxc_clean['Exchange Rate'] != 0]
 
