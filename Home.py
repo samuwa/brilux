@@ -5,27 +5,6 @@ import plotly.express as px
 import functions as fc
 import numpy as np
 import plotly.graph_objects as go
-
-
-@st.cache_data
-def get_data(f1):
-    df = pd.read_excel(f1)
-    return df
-
-@st.cache_data
-def get_data_sin(f2):
-    sf = pd.read_excel(f2)
-    return sf
-
-@st.cache_data
-def get_data_cxc(f3):
-    cx = pd.read_excel(f3)
-    return cx
-
-@st.cache_data
-def get_data_sin_cxc(f3):
-    cx = pd.read_excel(f3)
-    return cx
     
 
 
