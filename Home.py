@@ -17,7 +17,7 @@ def get_data_sin(f2):
     sf = pd.read_excel(f2)
     return sf
 
-@st.chache_data
+@st.cache_data
 def get_data_cxc(f3):
     cx = pd.read_excel(f3)
     return cx
