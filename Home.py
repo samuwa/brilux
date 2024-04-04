@@ -29,23 +29,23 @@ st.set_page_config(layout="wide")
 
 # session states
 
-if "df_con" not in st.session_state:
-    st.session_state.df_con = None
+# if "df_con" not in st.session_state:
+#     st.session_state.df_con = None
 
-if "df_sin" not in st.session_state:
-    st.session_state.df_sin = None
+# if "df_sin" not in st.session_state:
+#     st.session_state.df_sin = None
 
-if "df_cxc" not in st.session_state:
-    st.session_state.df_cxc = None
+# if "df_cxc" not in st.session_state:
+#     st.session_state.df_cxc = None
 
-if "df_sin_cxc" not in st.session_state:
-    st.session_state.df_sin_cxc = None
+# if "df_sin_cxc" not in st.session_state:
+#     st.session_state.df_sin_cxc = None
 
-if "df_pedidos" not in st.session_state:
-    st.session_state.df_pedidos = None
+# if "df_pedidos" not in st.session_state:
+#     st.session_state.df_pedidos = None
 
-if "df_cxc_combinado" not in st.session_state:
-    st.session_state.df_cxc_combinado = None
+# if "df_cxc_combinado" not in st.session_state:
+#     st.session_state.df_cxc_combinado = None
 
 
 
@@ -59,33 +59,46 @@ c_x_c = st.sidebar.file_uploader("Montar Excel - **CXC**")
 
 if con_factura != None:
     # st.session_state.df_con = pd.read_excel(con_factura)
-    st.session_state.df_con = get_data(con_factura)
-    st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Pedido"]
-    #st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Factura"]
-    st.session_state.df_con["QTY"] = st.session_state.df_con["QTY"].round(0).astype(int)
+    # st.session_state.df_con = get_data(con_factura)
+    # st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Pedido"]
+    # #st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Factura"]
+    # st.session_state.df_con["QTY"] = st.session_state.df_con["QTY"].round(0).astype(int)
+    
+    df_con = get_data(con_factura)
+    df_con = df_con[df_con["SOP Type"] == "Pedido"]
+    df_con["QTY"] = df_con["QTY"].round(0).astype(int)
 
 if sin_factura != None:
     # st.session_state.df_sin = pd.read_excel(sin_factura)
-    st.session_state.df_sin = get_data(sin_factura)
-    st.session_state.df_sin_cxc = pd.read_excel(sin_factura)
-    st.session_state.df_sin = st.session_state.df_sin[st.session_state.df_sin["SOP Type"] == "Pedido"]
-    st.session_state.df_sin = st.session_state.df_sin[~st.session_state.df_sin['SOP Number'].astype(str).str.startswith('P')]
-    st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[~st.session_state.df_sin_cxc['SOP Number'].astype(str).str.startswith('P')]
-    st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[st.session_state.df_sin_cxc["SOP Type"] == "Pedido"]
-    st.session_state.df_sin["QTY"] = st.session_state.df_sin["QTY"].round(0).astype(int)
+    # st.session_state.df_sin = get_data(sin_factura)
+    # st.session_state.df_sin_cxc = pd.read_excel(sin_factura)
+    # st.session_state.df_sin = st.session_state.df_sin[st.session_state.df_sin["SOP Type"] == "Pedido"]
+    # st.session_state.df_sin = st.session_state.df_sin[~st.session_state.df_sin['SOP Number'].astype(str).str.startswith('P')]
+    # st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[~st.session_state.df_sin_cxc['SOP Number'].astype(str).str.startswith('P')]
+    # st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[st.session_state.df_sin_cxc["SOP Type"] == "Pedido"]
+    # st.session_state.df_sin["QTY"] = st.session_state.df_sin["QTY"].round(0).astype(int)
+    
+    df_sin = get_data(sin_factura)
+    df_sin_cxc = pd.read_excel(sin_factura)
+    df_sin = df_sin[df_sin["SOP Type"] == "Pedido"]
+    df_sin = df_sin[~df_sin['SOP Number'].astype(str).str.startswith('P')]
+    df_sin_cxc = df_sin_cxc[~df_sin_cxc['SOP Number'].astype(str).str.startswith('P')]
+    df_sin_cxc = df_sin_cxc[df_sin_cxc["SOP Type"] == "Pedido"]
+    df_sin["QTY"] = df_sin["QTY"].round(0).astype(int)
+
 
 if c_x_c != None:
     # st.session_state.df_cxc = pd.read_excel(c_x_c)
-    st.session_state.df_csc = get_data(c_x_c)
-    st.session_state.df_cxc = st.session_state.df_cxc[st.session_state.df_cxc["Current Trx Amount"] > 0]
-    st.session_state.df_cxc['Current Trx Amount USD'] = st.session_state.df_cxc['Current Trx Amount'] / st.session_state.df_cxc['Exchange Rate']
-    st.session_state.df_cxc['Original Trx Amount USD'] = st.session_state.df_cxc['Original Trx Amount'] / st.session_state.df_cxc['Exchange Rate']
+    df_csc = get_data(c_x_c)
+    df_cxc = df_cxc[df_cxc["Current Trx Amount"] > 0]
+    df_cxc['Current Trx Amount USD'] = df_cxc['Current Trx Amount'] / df_cxc['Exchange Rate']
+    df_cxc['Original Trx Amount USD'] = df_cxc['Original Trx Amount'] / df_cxc['Exchange Rate']
 
-if isinstance(st.session_state.df_sin, pd.DataFrame) and isinstance(st.session_state.df_con, pd.DataFrame):
+if isinstance(df_sin, pd.DataFrame) and isinstance(df_con, pd.DataFrame):
 
-    st.session_state.df_pedidos = fc.reconcile_products(pd.concat([st.session_state.df_con, st.session_state.df_sin], ignore_index=True))
+    df_pedidos = fc.reconcile_products(pd.concat([df_con, df_sin], ignore_index=True))
 
-    df = st.session_state.df_pedidos
+    df = df_pedidos
     
     #df = df[df["SOP Type"] == "Factura"]
     
