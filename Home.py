@@ -54,7 +54,7 @@ if con_factura != None:
 
     df_con = get_data(con_factura)
     df_con = df_con[df_con["SOP Type"] == "Factura"]
-    df_con = df_con[~df_con["Customer Name"].isin(["REDVITAL COMERCIALIZADORA,C.A.", "SUPERMERCADOS UNICASA, C.A."])]
+    df_con = df_con[~df_con["Customer Name"].isin(["REDVITAL COMERCIALIZADORA,C.A.", "SUPERMERCADOS UNICASA, C.A.", "ABRAHAM WAINBERG"])]
     df_con = df_con[df_con["Void Status"] != 1]
     df_con["QTY"] = df_con["QTY"].round(0).astype(int)
 
