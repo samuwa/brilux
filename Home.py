@@ -48,9 +48,16 @@ if con_factura != None:
     # #st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Factura"]
     # st.session_state.df_con["QTY"] = st.session_state.df_con["QTY"].round(0).astype(int)
     
+    # df_con = get_data(con_factura)
+    # df_con = df_con[df_con["SOP Type"] == "Pedido"]
+    # df_con["QTY"] = df_con["QTY"].round(0).astype(int)
+
     df_con = get_data(con_factura)
-    df_con = df_con[df_con["SOP Type"] == "Pedido"]
+    df_con = df_con[df_con["SOP Type"] == "Factura"]
+    df_con = df_con[~df_con["Customer Name"].isin(["REDVITAL COMERCIALIZADORA,C.A.", "SUPERMERCADOS UNICASA, C.A."])]
+    df_con = df_con[df_con["Void Status"] != 1]
     df_con["QTY"] = df_con["QTY"].round(0).astype(int)
+
 
 if sin_factura != None:
     # st.session_state.df_sin = pd.read_excel(sin_factura)
