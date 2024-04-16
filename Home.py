@@ -128,7 +128,7 @@ reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Me
 
 if reporte == "Diario - Pedidos":
 
-  compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+  #compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
   df = df[df["Compania"] == compania]  
     
