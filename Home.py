@@ -123,7 +123,7 @@ if isinstance(df_sin_cxc, pd.DataFrame) and isinstance(df_cxc, pd.DataFrame):
 reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia", "Ventas SCI", "Análisis Vendedores"])
 
 
-
+st.write(df["Compania"].unique())
 
 
 if reporte == "Diario - Pedidos":
