@@ -130,7 +130,7 @@ if reporte == "Diario - Pedidos":
 
   #compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-  df = df[df["Compania"] == compania]  
+  #df = df[df["Compania"] == compania]  
     
 
   # compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
