@@ -102,7 +102,7 @@ if isinstance(df_sin, pd.DataFrame) and isinstance(df_con, pd.DataFrame):
 
     adf = df[df["Exchange Rate"] == 0]
 
-    df = df[df["Exchange Rate"] = 1] # Si es 0, entonces es una diferencia de precio o similar
+    df = df[df["Exchange Rate"] > 1] # Si es 0, entonces es una diferencia de precio o similar
 
     #df["Exchange Rate"] = df["Exchange Rate"].replace(0,1)
 
