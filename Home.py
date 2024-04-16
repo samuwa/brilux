@@ -128,9 +128,9 @@ reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Me
 
 if reporte == "Diario - Pedidos":
 
-  #compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+  compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-  #df = df[df["Compania"] == compania]  
+  df = df[df["Compania"] == compania]  
     
 
   # compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
@@ -139,9 +139,9 @@ if reporte == "Diario - Pedidos":
 
 
   # Filtrar por compañia
-  compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+  # compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-  df = df[df["Compania"] == compania]
+  # df = df[df["Compania"] == compania]
 
   df["Document Date"] = pd.to_datetime(df["Document Date"])
   df = df[df['Document Date'].dt.year == 2024]
