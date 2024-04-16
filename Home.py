@@ -96,6 +96,8 @@ if isinstance(df_sin, pd.DataFrame) and isinstance(df_con, pd.DataFrame):
 
     df["Compania"] = df["Compania"].apply(fc.keep_until_first_quote)
 
+    df.loc[df['Compania'] == 'GEOPOL DE VENEZUELA', 'Exchange Rate'] = 1
+
     adf = df[df["Exchange Rate"] == 0]
 
     df = df[df["Exchange Rate"] > 1] # Si es 0, entonces es una diferencia de precio o similar
@@ -305,6 +307,7 @@ elif reporte == "CXC":
     cxc = df_cxc
     pedidos = df_sin_cxc
     cxc_clean = cxc.dropna(subset=['Exchange Rate', 'Current Trx Amount', 'Original Trx Amount'])
+    cxc_clean.loc[df['Compania'] == 'GEOPOL DE VENEZUELA C.A.', 'Exchange Rate'] = 1
     cxc_clean = cxc_clean[cxc_clean['Exchange Rate'] != 0]
 
 
