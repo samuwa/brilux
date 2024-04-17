@@ -324,6 +324,7 @@ elif reporte == "CXC":
     # pedidos_unique['Current Trx Amount USD'] = pedidos_unique['Subtotal'] / pedidos_unique['Exchange Rate']
 
     # Cambiar subotal a remaining subtotal
+    pedidos_unique = pedidos_unique[pedidos_unique["Remaining Subtotal"] > 0]
     pedidos_unique['Current Trx Amount USD'] = pedidos_unique['Remaining Subtotal'] / pedidos_unique['Exchange Rate']
 
     # Create 'Original Trx Amount USD' with the same values as 'Current Trx Amount USD'
