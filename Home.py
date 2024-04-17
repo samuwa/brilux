@@ -42,32 +42,22 @@ def get_data_sin_cxc(f3):
 
 
 if con_factura != None:
-    # st.session_state.df_con = pd.read_excel(con_factura)
-    # st.session_state.df_con = get_data(con_factura)
-    # st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Pedido"]
-    # #st.session_state.df_con = st.session_state.df_con[st.session_state.df_con["SOP Type"] == "Factura"]
-    # st.session_state.df_con["QTY"] = st.session_state.df_con["QTY"].round(0).astype(int)
-    
-    # df_con = get_data(con_factura)
-    # df_con = df_con[df_con["SOP Type"] == "Pedido"]
-    # df_con["QTY"] = df_con["QTY"].round(0).astype(int)
+
 
     df_con = get_data(con_factura)
     df_con = df_con[df_con["SOP Type"] == "Factura"]
-    df_con = df_con[~df_con["Customer Name"].isin(["REDVITAL COMERCIALIZADORA,C.A.", "SUPERMERCADOS UNICASA, C.A.", "ABRAHAM WAINBERG"])]
+
+    # Cambiar Document Date por Order Date
+    df_con["Document Date"] = df_con["Order Date"]
+    
+    # df_con = df_con[~df_con["Customer Name"].isin(["REDVITAL COMERCIALIZADORA,C.A.", "SUPERMERCADOS UNICASA, C.A.", "ABRAHAM WAINBERG"])]
+
     df_con = df_con[df_con["Void Status"] != 1]
     df_con["QTY"] = df_con["QTY"].round(0).astype(int)
 
 
 if sin_factura != None:
-    # st.session_state.df_sin = pd.read_excel(sin_factura)
-    # st.session_state.df_sin = get_data(sin_factura)
-    # st.session_state.df_sin_cxc = pd.read_excel(sin_factura)
-    # st.session_state.df_sin = st.session_state.df_sin[st.session_state.df_sin["SOP Type"] == "Pedido"]
-    # st.session_state.df_sin = st.session_state.df_sin[~st.session_state.df_sin['SOP Number'].astype(str).str.startswith('P')]
-    # st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[~st.session_state.df_sin_cxc['SOP Number'].astype(str).str.startswith('P')]
-    # st.session_state.df_sin_cxc = st.session_state.df_sin_cxc[st.session_state.df_sin_cxc["SOP Type"] == "Pedido"]
-    # st.session_state.df_sin["QTY"] = st.session_state.df_sin["QTY"].round(0).astype(int)
+
     
     df_sin = get_data_sin(sin_factura)
     df_sin_cxc = get_data_sin_cxc(sin_factura)
@@ -309,7 +299,7 @@ elif reporte == "CXC":
     cxc = df_cxc
     pedidos = df_sin_cxc
     cxc_clean = cxc.dropna(subset=['Exchange Rate', 'Current Trx Amount', 'Original Trx Amount'])
-    cxc_clean.loc[df['Compania'] == 'GEOPOL DE VENEZUELA C.A.', 'Exchange Rate'] = 1
+    # cxc_clean.loc[df['Compania'] == 'GEOPOL DE VENEZUELA C.A.', 'Exchange Rate'] = 1
     cxc_clean = cxc_clean[cxc_clean['Exchange Rate'] != 0]
 
 
@@ -330,8 +320,11 @@ elif reporte == "CXC":
     # Remove duplicates based on SOP Number, keeping the first instance
     pedidos_unique = pedidos_filtered.drop_duplicates(subset=['SOP Number'], keep='first')
 
-    # Convert the 'Subtotal' to USD and rename the column to 'Current Trx Amount USD'
-    pedidos_unique['Current Trx Amount USD'] = pedidos_unique['Subtotal'] / pedidos_unique['Exchange Rate']
+    # # Convert the 'Subtotal' to USD and rename the column to 'Current Trx Amount USD'
+    # pedidos_unique['Current Trx Amount USD'] = pedidos_unique['Subtotal'] / pedidos_unique['Exchange Rate']
+
+    # Cambiar subotal a remaining subtotal
+    pedidos_unique['Current Trx Amount USD'] = pedidos_unique['Remaining Subtotal'] / pedidos_unique['Exchange Rate']
 
     # Create 'Original Trx Amount USD' with the same values as 'Current Trx Amount USD'
     pedidos_unique['Original Trx Amount USD'] = pedidos_unique['Current Trx Amount USD']
