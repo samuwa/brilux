@@ -251,7 +251,7 @@ elif reporte == "Mensual - Pedidos":
   st.write("**Ventas por cliente**")
   sales_by_customer = filtered_data.groupby('Customer Name')['Venta $'].sum().reset_index(name='Total Sales Value ($)')
   sales_by_customer = sales_by_customer.sort_values("Total Sales Value ($)", ascending=False).style.format({'Total Sales Value ($)': '{:,.2f}'})
-  st.table(sales_by_customer)
+  st.dataframe(sales_by_customer, use_container_width=True, hide_index=True)
 
   # Detalles cliente (remains focused on QTY for product details)
   customer_list = filtered_data["Customer Name"].unique()
