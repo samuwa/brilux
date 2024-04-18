@@ -346,6 +346,13 @@ elif reporte == "CXC":
     # Concatenate the DataFrames
     combined_df = pd.concat([cxc_prepared, pedidos_prepared], ignore_index=True)
 
+
+# Assuming df is your DataFrame
+# Find rows where 'Customer Name' starts with 'Automercados Plaza' and update them
+    
+    combined_df.loc[compbined_df['Customer Name'].str.startswith('AUTOMERCADOS PLAZA'), 'Customer Name'] = 'Automercados Plaza'
+
+
     combined_df["Document Date"] = combined_df["Document Date"].dt.date
 
     compania = st.selectbox("Seleccionar Compañía", combined_df["Compania"].unique())
