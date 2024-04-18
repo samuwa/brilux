@@ -58,22 +58,32 @@ if con_factura != None:
 
 if sin_factura != None:
 
+    try:
+
     
-    df_sin = get_data_sin(sin_factura)
-    df_sin_cxc = get_data_sin_cxc(sin_factura)
-    df_sin = df_sin[df_sin["SOP Type"] == "Pedido"]
-    df_sin = df_sin[~df_sin['SOP Number'].astype(str).str.startswith('P')]
-    df_sin_cxc = df_sin_cxc[~df_sin_cxc['SOP Number'].astype(str).str.startswith('P')]
-    df_sin_cxc = df_sin_cxc[df_sin_cxc["SOP Type"] == "Pedido"]
-    df_sin["QTY"] = df_sin["QTY"].round(0).astype(int)
+        df_sin = get_data_sin(sin_factura)
+        df_sin_cxc = get_data_sin_cxc(sin_factura)
+        df_sin = df_sin[df_sin["SOP Type"] == "Pedido"]
+        df_sin = df_sin[~df_sin['SOP Number'].astype(str).str.startswith('P')]
+        df_sin_cxc = df_sin_cxc[~df_sin_cxc['SOP Number'].astype(str).str.startswith('P')]
+        df_sin_cxc = df_sin_cxc[df_sin_cxc["SOP Type"] == "Pedido"]
+        df_sin["QTY"] = df_sin["QTY"].round(0).astype(int)
+
+    except:
+        pass
 
 
 if c_x_c != None:
-    # st.session_state.df_cxc = pd.read_excel(c_x_c)
-    df_cxc = get_data_cxc(c_x_c)
-    df_cxc = df_cxc[df_cxc["Current Trx Amount"] > 0]
-    df_cxc['Current Trx Amount USD'] = df_cxc['Current Trx Amount'] / df_cxc['Exchange Rate']
-    df_cxc['Original Trx Amount USD'] = df_cxc['Original Trx Amount'] / df_cxc['Exchange Rate']
+
+    try:
+        # st.session_state.df_cxc = pd.read_excel(c_x_c)
+        df_cxc = get_data_cxc(c_x_c)
+        df_cxc = df_cxc[df_cxc["Current Trx Amount"] > 0]
+        df_cxc['Current Trx Amount USD'] = df_cxc['Current Trx Amount'] / df_cxc['Exchange Rate']
+        df_cxc['Original Trx Amount USD'] = df_cxc['Original Trx Amount'] / df_cxc['Exchange Rate']
+
+    except:
+        pass
 
 if isinstance(df_sin, pd.DataFrame) and isinstance(df_con, pd.DataFrame):
 
