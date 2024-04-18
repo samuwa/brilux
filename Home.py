@@ -447,8 +447,8 @@ elif reporte == "CXC":
 
     conditions = [
     (combined_df['days past due'] <= 0) | pd.isnull(combined_df['Due Date']),
-    combined_df['days past due'].between(1, 30),
-    combined_df['days past due'] > 30
+    combined_df['days past due'].between(1, 15),
+    combined_df['days past due'] > 5
 ]
 
     # Names for the categories in Spanish
