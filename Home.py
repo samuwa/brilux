@@ -360,7 +360,7 @@ elif reporte == "CXC":
 # Assuming df is your DataFrame
 # Find rows where 'Customer Name' starts with 'Automercados Plaza' and update them
     
-    combined_df.loc[compbined_df['Customer Name'].str.startswith('AUTOMERCADOS PLAZA'), 'Customer Name'] = 'Automercados Plaza'
+    combined_df.loc[combined_df['Customer Name'].str.startswith('AUTOMERCADOS PLAZA'), 'Customer Name'] = 'Automercados Plaza'
 
 
     combined_df["Document Date"] = combined_df["Document Date"].dt.date
