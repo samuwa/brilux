@@ -489,7 +489,7 @@ elif reporte == "CXC":
 
     combined_df["Due Date"] = combined_df["Due Date"].dt.date
 
-    st.dataframe(combined_df[combined_df["Categoría de Vencimiento"] == categoria][["Customer Name", "Document Number", "Original Trx Amount USD", "Current Trx Amount USD","Due Date", "days past due"]], use_container_width=True)
+    st.dataframe(combined_df[combined_df["Categoría de Vencimiento"] == categoria][["Customer Name","Salesperson ID, "Document Number", "Original Trx Amount USD", "Current Trx Amount USD","Due Date", "days past due"]], use_container_width=True)
     #[["Customer Name", "Original Trx Amount USD", "Current Trx Amount","Due Date", "days past due"]]
 
     st.subheader("Todas las cuentas")
