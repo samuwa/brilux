@@ -729,6 +729,8 @@ elif reporte == "Análisis Vendedores":
 
             # Filter out columns where the sum across all rows is zero
             pivot_qty_by_customer_item = pivot_qty_by_customer_item.loc[:, (pivot_qty_by_customer_item.sum(axis=0) > 0)]
+
+            pivot_qty_by_customer_item = pivot_qty_by_customer_item.replace(0, '')
             
             # Display the pivot table in the Streamlit application
             st.write("Resumen de Cantidad por Cliente y Producto")
