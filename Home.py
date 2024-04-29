@@ -719,6 +719,20 @@ elif reporte == "Análisis Vendedores":
             col1.dataframe(sales_per_customer.sort_values("Venta $", ascending=False), hide_index=True)
             col3.write("CLientes **no vendidos**")
             col3.dataframe(cnv["Customer Name"].unique(), hide_index=True)
+
+
+            pivot_qty_by_customer_item = filtered_data.pivot_table(index='Customer Name', 
+                                                       columns='Item Description', 
+                                                       values='QTY', 
+                                                       aggfunc='sum', 
+                                                       fill_value=0)
+
+            # Filter out columns where the sum across all rows is zero
+            pivot_qty_by_customer_item = pivot_qty_by_customer_item.loc[:, (pivot_qty_by_customer_item.sum(axis=0) > 0)]
+            
+            # Display the pivot table in the Streamlit application
+            st.write("Resumen de Cantidad por Cliente y Producto")
+            st.dataframe(pivot_qty_by_customer_item)
     
     
             customer_names = salesperson_data['Customer Name'].unique()
