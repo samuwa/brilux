@@ -721,8 +721,8 @@ elif reporte == "Análisis Vendedores":
             col3.dataframe(cnv["Customer Name"].unique(), hide_index=True)
 
 
-            pivot_qty_by_customer_item = filtered_data.pivot_table(index='Customer Name', 
-                                                       columns='Item Description', 
+            pivot_qty_by_customer_item = filtered_data.pivot_table(index='Item Description', 
+                                                       columns='Customer Name', 
                                                        values='QTY', 
                                                        aggfunc='sum', 
                                                        fill_value=0)
