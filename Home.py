@@ -645,23 +645,13 @@ elif reporte == "Ventas SCI":
     ventas_por_customer['Ventas por Cliente ($)'] = pd.to_numeric(ventas_por_customer['Ventas por Cliente ($)'].str.replace(',', ''), errors='coerce')
     sales_from_customers_discovered_by_sci_sum = ventas_por_customer[ventas_por_customer['Discovered by SCI'] == 'Yes']['Ventas por Cliente ($)'].sum()
 
-    # Ventas recurrentes
-
-    purchase_counts = sales_from_customers_discovered_by_sci_sum.groupby('Customer Name')['SOP Number'].nunique()
-
-    # Customers with exactly two purchases
-    two_purchases = purchase_counts[purchase_counts == 2].count()
-
-    # Customers with three or more purchases
-    three_or_more_purchases = purchase_counts[purchase_counts >= 3].count()
+ 
 
     
     # Display metrics in Streamlit
     col1.markdown("##")
     col1.metric("Clientes descubiertos por SCI", customers_discovered_by_sci_count)
     col1.metric("Ventas a clientes descubiertos por SCI ($)", f"${sales_from_customers_discovered_by_sci_sum:,.0f}")
-    col1.metric("Clientes con recurrencia 2 (DXSCI)", two_purchases)
-    col1.metric("Clientes con recurrencia >= 3 (DXSCI)", three_or_more_purchases)
 
 elif reporte == "Análisis Vendedores":
 
