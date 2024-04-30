@@ -110,7 +110,8 @@ def filter_prefixes(description):
 
 def preprocess_data(df, inicio, cierre):
     # Convert 'Document Date' to datetime format
-    df = df[df['SOP Type'] == "Pedido"]
+    df['Document Date'] = df.apply(lambda x: x['Order Date'] if x['Order Date'] != pd.Timestamp('1900-01-01') else x['Document Date'], axis=1)
+    df = df[df['SOP Type'] == "Factura"]
     df['Document Date'] = pd.to_datetime(df['Document Date'])
     # df = df[df["Document Date"] >= "20240201"]
     # df = df[df["Document Date"] <= "20240301"]
