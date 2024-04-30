@@ -48,7 +48,8 @@ if con_factura != None:
     df_con = df_con[df_con["SOP Type"] == "Factura"]
 
     # Cambiar Document Date por Order Date
-    df_con["Document Date"] = df_con["Order Date"]
+    #df_con["Document Date"] = df_con["Order Date"]
+    df_con['Document Date'] = df_con.apply(lambda x: x['Order Date'] if x['Order Date'] != pd.Timestamp('1900-01-01') else x['Document Date'], axis=1)
     
     # df_con = df_con[~df_con["Customer Name"].isin(["REDVITAL COMERCIALIZADORA,C.A.", "SUPERMERCADOS UNICASA, C.A.", "ABRAHAM WAINBERG"])]
 
