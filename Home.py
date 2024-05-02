@@ -125,7 +125,7 @@ if isinstance(df_sin_cxc, pd.DataFrame) and isinstance(df_cxc, pd.DataFrame):
 
 
 # Seleccionar un reporte a visualizar
-reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Ventas Estrategia", "Ventas SCI", "Análisis Vendedores"])
+reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Detallado", "Ventas SCI", "Análisis Vendedores"])
 
 
 
@@ -498,7 +498,7 @@ elif reporte == "CXC":
     st.dataframe(combined_df[["Customer Name", "Document Number", "Original Trx Amount USD", "Current Trx Amount USD","Due Date", "days past due"]].sort_values("Due Date", ascending=False), use_container_width=True)
 
 
-elif reporte == "Ventas Estrategia":
+elif reporte == "Detallado Cadenas":
 
     # df1 = pd.read_excel(docs)
     # df2 = pd.read_excel(bdoc)
@@ -516,52 +516,176 @@ elif reporte == "Ventas Estrategia":
     # df['Compania'] = df['Compania'].apply(keep_until_first_quote)
 
   # Filtrar por compañia
-    compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
+    # compania = st.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-    df = df[df["Compania"] == compania]
-
-
-
-    df = df[df["Exchange Rate"] > 0]
+    # df = df[df["Compania"] == compania]
 
 
-  # Fila total = QTY * Precio / Exchange Rate
 
-    df['Venta $'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
+  #   df = df[df["Exchange Rate"] > 0]
 
-  # Mismo analisis
+
+  # # Fila total = QTY * Precio / Exchange Rate
+
+  #   df['Venta $'] = df['Unit Price'] * df['QTY'] / df['Exchange Rate']
+
+  # # Mismo analisis
+  #   df['Document Date'] = pd.to_datetime(df['Document Date'])
+
+  #   df['Salesperson ID'] = df['Salesperson ID'].astype(str)
+
+  #   st.subheader('Estrategia de ventas semanal')
+  #   df['Document Date'] = pd.to_datetime(df['Document Date'])
+
+    df = df[df['Compania'] == "FABRICA BRILUX C.A.'FABRICA BRILUX C.A."]
+
     df['Document Date'] = pd.to_datetime(df['Document Date'])
-
     df['Salesperson ID'] = df['Salesperson ID'].astype(str)
+    
+    df['Customer Name'] = df['Customer Name'].replace(r'^.*AUTOMERCADOS PLAZA.*$', 'Automercados Plaza', regex=True)
+    
+    customers_to_keep = [
+        'REDVITAL COMERCIALIZADORA,C.A.',
+        'SUPERMERCADOS UNICASA, C.A.',
+        'EXCELSIOR GAMA SUPERMERCADOS, C.A.',
+        'CENTRAL MADEIRENSE, C.A.',
+        'Automercados Plaza',
+        'AUTOMERCADO LUZ, C.A.',
+        'PLANSUAREZ, C.A.'
+    ]
+    
+    # Assuming df is your DataFrame
+    filtered_df = df[df['Customer Name'].isin(customers_to_keep)]
+    
+    keywords = ['tessa', 'cherry', 'servilletas', 'intercalada', 'foodservice']
+    
+    # Regular expression pattern to match any of the keywords (case insensitive)
+    pattern = '|'.join(keywords)  # Creates a pattern like 'tessa|cherry|servilletas|intercalada|foodservice'
+    
+    # Filter the DataFrame
+    filtered_df = filtered_df[filtered_df['Item Description'].str.contains(pattern, case=False, na=False)]
+    
+    
+    filtered_df['Salesperson ID'] = filtered_df['Salesperson ID'].str.replace(r'.*SCI.*', 'SCI', regex=True)
+    
+    vendedores_evaluar = ["OFC", "APT", "HGE", "SCI", "MDN"]
+    filtered_df = filtered_df[filtered_df['Salesperson ID'].isin(vendedores_evaluar)]
+    
+    st.write("Select a date range")
+    
+    col1, col2 = st.columns(2)
+    start_date = col1.date_input("Start date", value=filtered_df['Document Date'].min().date(), min_value=filtered_df['Document Date'].min().date(), max_value=filtered_df['Document Date'].max().date())
+    end_date = col2.date_input("End date", value=filtered_df['Document Date'].max().date(), min_value=filtered_df['Document Date'].min().date(), max_value=filtered_df['Document Date'].max().date())
+    
+    # Convert dates from the picker to pandas timestamps
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    
+    # Ensure start date is not after end date
+    if start_date > end_date:
+        st.error('Error: End date must fall after start date.')
+    
+    # Filter the DataFrame based on the selected date range
+    filtered_df = filtered_df[(filtered_df['Document Date'] >= start_date) & (filtered_df['Document Date'] <= end_date)]
+    
+    
+    customer_names = st.multiselect(
+        'Select Customer Name',
+        options=filtered_df['Customer Name'].unique(),
+        default=filtered_df['Customer Name'].unique()
+    )
+    
+    item_descriptions = st.multiselect(
+        'Select Item Description',
+        options=filtered_df['Item Description'].unique(),
+        default=filtered_df.sort_values("Document Date", ascending=False)['Item Description'].unique()[0:9]
+    )
+    
+    salesperson_ids = st.multiselect(
+        'Select Salesperson ID',
+        options=filtered_df['Salesperson ID'].unique(),
+        default=filtered_df['Salesperson ID'].unique()
+    )
+    
+    # Filter the DataFrame based on selections
+    df = filtered_df[
+        (filtered_df['Customer Name'].isin(customer_names)) &
+        (filtered_df['Item Description'].isin(item_descriptions)) &
+        (filtered_df['Salesperson ID'].isin(salesperson_ids))
+    ]
+    
+    # Radio select widget for choosing the display category
+    category = st.radio(
+        'Choose a category to display',
+        ('Customer Name', 'Item Description', 'Salesperson ID'), horizontal=True
+    )
+    
+    time_period = st.radio(
+        'Select Time Period',
+        ('Weekly', 'Monthly'), horizontal=True
+    )
+    
+    if time_period == 'Monthly':
+        freq = 'M'
+    elif time_period == 'Weekly':
+        freq = 'W'
+    
+    # Create a pivot table
+    pivot_table = pd.pivot_table(
+        df,
+        values='Venta Producto ($)',
+        index=category,
+        columns=pd.Grouper(key='Document Date', freq=freq),
+        aggfunc='sum',
+        fill_value=0
+    )
+    
+    # Format the column headers for better readability
+    pivot_table.columns = pivot_table.columns.strftime('%Y-%m-%d' if freq == 'W' else '%Y-%m')
+    
+    pivot_table_styled = pivot_table.style.format("{:,.0f}")
+    
+    median_values = pivot_table.median(axis=0)
+    
+    # Create a DataFrame for the median to append to the pivot table
+    median_df = pd.DataFrame(median_values).T
+    median_df.index = ['Median']
+    
+    # Concatenate the pivot table with the median DataFrame
+    plot_data = pd.concat([pivot_table, median_df])
+    
+    # Melt the DataFrame for easier plotting with Plotly
+    plot_data = plot_data.reset_index().melt(id_vars='index', var_name='Date', value_name='Venta Producto ($)')
+    
+    # Create the line chart using Plotly Express
+    fig = px.line(plot_data, x='Date', y='Venta Producto ($)', color='index',
+                  line_dash_sequence=['solid'] * (len(plot_data['index'].unique()) - 1) + ['dash'],
+                  title='Sales Data Over Time')
+    
+    # Customize the median line to make it thicker
+    fig.for_each_trace(lambda trace: trace.update(line=dict(width=4)) if trace.name == "Median" else ())
+    
+    # Display the figure in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+    
+    
+    group_totals = pivot_table.sum(axis=1).sort_values(ascending=False)
+    overall_total = group_totals.sum()
+    
+    # Calculate percentages and format them for display
+    percentages = (group_totals / overall_total * 100).round(2)
+    
+    
+    # Display percentages under the graph
+    
+    
+    with st.expander("Data tabular"):
+        st.dataframe(pivot_table_styled, use_container_width=True)
+        st.subheader(f"Total: ${overall_total:,.0f}")
+    
+        for index, percent in percentages.items():
+            st.metric(index, f"{percent}%")
 
-    st.subheader('Estrategia de ventas semanal')
-    df['Document Date'] = pd.to_datetime(df['Document Date'])
-
-    customer_names = df['Customer Name'].unique()
-    selected_customer = st.selectbox("Select a Customer:", customer_names)
-
-    customer_data = df[df['Customer Name'] == selected_customer]
-
-    # Display current month purchases
-    current_month = datetime.now().month
-    current_year = datetime.now().year
-    current_month_purchases = customer_data[(customer_data['Document Date'].dt.month == current_month) &
-                                                (customer_data['Document Date'].dt.year == current_year)]
-
-    if not current_month_purchases.empty:
-        st.write(f"Current Month Purchases for {selected_customer}:")
-        #st.dataframe(current_month_purchases)
-        st.dataframe(current_month_purchases[["SOP Number", "Document Date", "Salesperson ID", "Item Description", "Unit Price $", "QTY"]], hide_index=True)
-    else:
-        st.write("No purchases found for the current month.")
-
-        # Generate and display recommendations
-    recommendations = fc.recommend_sales(customer_data, current_month, current_year)
-    if not recommendations.empty:
-        st.write("Recommended Sales based on Previous Purchases:")
-        st.dataframe(recommendations[recommendations["Purchase Instances"] >= 2], hide_index=True)
-    else:
-        st.write("No recommendations available based on previous purchases.")
 
 elif reporte == "Ventas SCI":
 
