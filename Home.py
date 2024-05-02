@@ -500,7 +500,6 @@ elif reporte == "CXC":
 
 elif reporte == "Detallado Cadenas":
 
-    #df = df[df['Compania'] == "FABRICA BRILUX C.A.'FABRICA BRILUX C.A."]
 
     df['Document Date'] = pd.to_datetime(df['Document Date'])
     df['Salesperson ID'] = df['Salesperson ID'].astype(str)
@@ -535,119 +534,118 @@ elif reporte == "Detallado Cadenas":
     filtered_df = filtered_df[filtered_df['Salesperson ID'].isin(vendedores_evaluar)]
     
     st.write("Select a date range")
-    st.write(df)
     col1, col2 = st.columns(2)
     start_date = col1.date_input("Start date", value=filtered_df['Document Date'].min().date(), min_value=filtered_df['Document Date'].min().date(), max_value=filtered_df['Document Date'].max().date())
     end_date = col2.date_input("End date", value=filtered_df['Document Date'].max().date(), min_value=filtered_df['Document Date'].min().date(), max_value=filtered_df['Document Date'].max().date())
 
-    # # Convert dates from the picker to pandas timestamps
-    # start_date = pd.to_datetime(start_date)
-    # end_date = pd.to_datetime(end_date)
+    # Convert dates from the picker to pandas timestamps
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
     
-    # # Ensure start date is not after end date
-    # if start_date > end_date:
-    #     st.error('Error: End date must fall after start date.')
+    # Ensure start date is not after end date
+    if start_date > end_date:
+        st.error('Error: End date must fall after start date.')
     
-    # # Filter the DataFrame based on the selected date range
-    # filtered_df = filtered_df[(filtered_df['Document Date'] >= start_date) & (filtered_df['Document Date'] <= end_date)]
-    
-    
-    # customer_names = st.multiselect(
-    #     'Select Customer Name',
-    #     options=filtered_df['Customer Name'].unique(),
-    #     default=filtered_df['Customer Name'].unique()
-    # )
-    
-    # item_descriptions = st.multiselect(
-    #     'Select Item Description',
-    #     options=filtered_df['Item Description'].unique(),
-    #     default=filtered_df.sort_values("Document Date", ascending=False)['Item Description'].unique()[0:9]
-    # )
-    
-    # salesperson_ids = st.multiselect(
-    #     'Select Salesperson ID',
-    #     options=filtered_df['Salesperson ID'].unique(),
-    #     default=filtered_df['Salesperson ID'].unique()
-    # )
-    
-    # # Filter the DataFrame based on selections
-    # df = filtered_df[
-    #     (filtered_df['Customer Name'].isin(customer_names)) &
-    #     (filtered_df['Item Description'].isin(item_descriptions)) &
-    #     (filtered_df['Salesperson ID'].isin(salesperson_ids))
-    # ]
-    
-    # # Radio select widget for choosing the display category
-    # category = st.radio(
-    #     'Choose a category to display',
-    #     ('Customer Name', 'Item Description', 'Salesperson ID'), horizontal=True
-    # )
-    
-    # time_period = st.radio(
-    #     'Select Time Period',
-    #     ('Weekly', 'Monthly'), horizontal=True
-    # )
-    
-    # if time_period == 'Monthly':
-    #     freq = 'M'
-    # elif time_period == 'Weekly':
-    #     freq = 'W'
-    
-    # # Create a pivot table
-    # pivot_table = pd.pivot_table(
-    #     df,
-    #     values='Venta Producto ($)',
-    #     index=category,
-    #     columns=pd.Grouper(key='Document Date', freq=freq),
-    #     aggfunc='sum',
-    #     fill_value=0
-    # )
-    
-    # # Format the column headers for better readability
-    # pivot_table.columns = pivot_table.columns.strftime('%Y-%m-%d' if freq == 'W' else '%Y-%m')
-    
-    # pivot_table_styled = pivot_table.style.format("{:,.0f}")
-    
-    # median_values = pivot_table.median(axis=0)
-    
-    # # Create a DataFrame for the median to append to the pivot table
-    # median_df = pd.DataFrame(median_values).T
-    # median_df.index = ['Median']
-    
-    # # Concatenate the pivot table with the median DataFrame
-    # plot_data = pd.concat([pivot_table, median_df])
-    
-    # # Melt the DataFrame for easier plotting with Plotly
-    # plot_data = plot_data.reset_index().melt(id_vars='index', var_name='Date', value_name='Venta Producto ($)')
-    
-    # # Create the line chart using Plotly Express
-    # fig = px.line(plot_data, x='Date', y='Venta Producto ($)', color='index',
-    #               line_dash_sequence=['solid'] * (len(plot_data['index'].unique()) - 1) + ['dash'],
-    #               title='Sales Data Over Time')
-    
-    # # Customize the median line to make it thicker
-    # fig.for_each_trace(lambda trace: trace.update(line=dict(width=4)) if trace.name == "Median" else ())
-    
-    # # Display the figure in Streamlit
-    # st.plotly_chart(fig, use_container_width=True)
+    # Filter the DataFrame based on the selected date range
+    filtered_df = filtered_df[(filtered_df['Document Date'] >= start_date) & (filtered_df['Document Date'] <= end_date)]
     
     
-    # group_totals = pivot_table.sum(axis=1).sort_values(ascending=False)
-    # overall_total = group_totals.sum()
+    customer_names = st.multiselect(
+        'Select Customer Name',
+        options=filtered_df['Customer Name'].unique(),
+        default=filtered_df['Customer Name'].unique()
+    )
     
-    # # Calculate percentages and format them for display
-    # percentages = (group_totals / overall_total * 100).round(2)
+    item_descriptions = st.multiselect(
+        'Select Item Description',
+        options=filtered_df['Item Description'].unique(),
+        default=filtered_df.sort_values("Document Date", ascending=False)['Item Description'].unique()[0:9]
+    )
+    
+    salesperson_ids = st.multiselect(
+        'Select Salesperson ID',
+        options=filtered_df['Salesperson ID'].unique(),
+        default=filtered_df['Salesperson ID'].unique()
+    )
+    
+    # Filter the DataFrame based on selections
+    df = filtered_df[
+        (filtered_df['Customer Name'].isin(customer_names)) &
+        (filtered_df['Item Description'].isin(item_descriptions)) &
+        (filtered_df['Salesperson ID'].isin(salesperson_ids))
+    ]
+    
+    # Radio select widget for choosing the display category
+    category = st.radio(
+        'Choose a category to display',
+        ('Customer Name', 'Item Description', 'Salesperson ID'), horizontal=True
+    )
+    
+    time_period = st.radio(
+        'Select Time Period',
+        ('Weekly', 'Monthly'), horizontal=True
+    )
+    
+    if time_period == 'Monthly':
+        freq = 'M'
+    elif time_period == 'Weekly':
+        freq = 'W'
+    
+    # Create a pivot table
+    pivot_table = pd.pivot_table(
+        df,
+        values='Venta Producto ($)',
+        index=category,
+        columns=pd.Grouper(key='Document Date', freq=freq),
+        aggfunc='sum',
+        fill_value=0
+    )
+    
+    # Format the column headers for better readability
+    pivot_table.columns = pivot_table.columns.strftime('%Y-%m-%d' if freq == 'W' else '%Y-%m')
+    
+    pivot_table_styled = pivot_table.style.format("{:,.0f}")
+    
+    median_values = pivot_table.median(axis=0)
+    
+    # Create a DataFrame for the median to append to the pivot table
+    median_df = pd.DataFrame(median_values).T
+    median_df.index = ['Median']
+    
+    # Concatenate the pivot table with the median DataFrame
+    plot_data = pd.concat([pivot_table, median_df])
+    
+    # Melt the DataFrame for easier plotting with Plotly
+    plot_data = plot_data.reset_index().melt(id_vars='index', var_name='Date', value_name='Venta Producto ($)')
+    
+    # Create the line chart using Plotly Express
+    fig = px.line(plot_data, x='Date', y='Venta Producto ($)', color='index',
+                  line_dash_sequence=['solid'] * (len(plot_data['index'].unique()) - 1) + ['dash'],
+                  title='Sales Data Over Time')
+    
+    # Customize the median line to make it thicker
+    fig.for_each_trace(lambda trace: trace.update(line=dict(width=4)) if trace.name == "Median" else ())
+    
+    # Display the figure in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
     
     
-    # # Display percentages under the graph
+    group_totals = pivot_table.sum(axis=1).sort_values(ascending=False)
+    overall_total = group_totals.sum()
+    
+    # Calculate percentages and format them for display
+    percentages = (group_totals / overall_total * 100).round(2)
     
     
-    # with st.expander("Data tabular"):
-    #     st.dataframe(pivot_table_styled, use_container_width=True)
-    #     st.subheader(f"Total: ${overall_total:,.0f}")
+    # Display percentages under the graph
     
-    #     for index, percent in percentages.items():
-    #         st.metric(index, f"{percent}%")
+    
+    with st.expander("Data tabular"):
+        st.dataframe(pivot_table_styled, use_container_width=True)
+        st.subheader(f"Total: ${overall_total:,.0f}")
+    
+        for index, percent in percentages.items():
+            st.metric(index, f"{percent}%")
 
 
 elif reporte == "Ventas SCI":
