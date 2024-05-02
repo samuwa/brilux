@@ -500,6 +500,7 @@ elif reporte == "CXC":
 
 elif reporte == "Detallado Cadenas":
 
+    df['Document Date'] = pd.to_datetime(df['Document Date'])
     df = df[df['Compania'] == "FABRICA BRILUX C.A.'FABRICA BRILUX C.A."]
 
     df['Document Date'] = pd.to_datetime(df['Document Date'])
@@ -537,9 +538,9 @@ elif reporte == "Detallado Cadenas":
     st.write("Select a date range")
     
     col1, col2 = st.columns(2)
-    start_date = col1.date_input("Start date", value=filtered_df['Document Date'].min().date())
-    end_date = col2.date_input("End date", value=filtered_df['Document Date'].max().date())
-    
+    start_date = col1.date_input("Start date", value=filtered_df['Document Date'].min().date(), min_value=filtered_df['Document Date'].min().date(), max_value=filtered_df['Document Date'].max().date())
+    end_date = col2.date_input("End date", value=filtered_df['Document Date'].max().date(), min_value=filtered_df['Document Date'].min().date(), max_value=filtered_df['Document Date'].max().date())
+
     # # Convert dates from the picker to pandas timestamps
     # start_date = pd.to_datetime(start_date)
     # end_date = pd.to_datetime(end_date)
