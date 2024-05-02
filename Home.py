@@ -498,7 +498,7 @@ elif reporte == "CXC":
     st.dataframe(combined_df[["Customer Name", "Document Number", "Original Trx Amount USD", "Current Trx Amount USD","Due Date", "days past due"]].sort_values("Due Date", ascending=False), use_container_width=True)
 
 
-elif reporte == "Detallado Cadenas":Z
+elif reporte == "Detallado Cadenas":
 
     df = df[df['Compania'] == "FABRICA BRILUX C.A.'FABRICA BRILUX C.A."]
 
