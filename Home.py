@@ -594,7 +594,7 @@ elif reporte == "Detallado Cadenas":
     # Create a pivot table
     pivot_table = pd.pivot_table(
         df,
-        values='Venta Producto ($)',
+        values='Venta $',
         index=category,
         columns=pd.Grouper(key='Document Date', freq=freq),
         aggfunc='sum',
@@ -616,10 +616,10 @@ elif reporte == "Detallado Cadenas":
     plot_data = pd.concat([pivot_table, median_df])
     
     # Melt the DataFrame for easier plotting with Plotly
-    plot_data = plot_data.reset_index().melt(id_vars='index', var_name='Date', value_name='Venta Producto ($)')
+    plot_data = plot_data.reset_index().melt(id_vars='index', var_name='Date', value_name='Venta $')
     
     # Create the line chart using Plotly Express
-    fig = px.line(plot_data, x='Date', y='Venta Producto ($)', color='index',
+    fig = px.line(plot_data, x='Date', y='Venta $', color='index',
                   line_dash_sequence=['solid'] * (len(plot_data['index'].unique()) - 1) + ['dash'],
                   title='Sales Data Over Time')
     
