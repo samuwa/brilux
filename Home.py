@@ -500,7 +500,7 @@ elif reporte == "CXC":
 
 elif reporte == "Detallado Cadenas":
 
-    df = df[df['Compania'] == "FABRICA BRILUX C.A.'FABRICA BRILUX C.A."]
+    #df = df[df['Compania'] == "FABRICA BRILUX C.A.'FABRICA BRILUX C.A."]
 
     df['Document Date'] = pd.to_datetime(df['Document Date'])
     df['Salesperson ID'] = df['Salesperson ID'].astype(str)
