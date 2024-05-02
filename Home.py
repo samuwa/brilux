@@ -125,7 +125,7 @@ if isinstance(df_sin_cxc, pd.DataFrame) and isinstance(df_cxc, pd.DataFrame):
 
 
 # Seleccionar un reporte a visualizar
-reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Detallado", "Ventas SCI", "Análisis Vendedores"])
+reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Detallado Cadenas", "Ventas SCI", "Análisis Vendedores"])
 
 
 
