@@ -500,7 +500,6 @@ elif reporte == "CXC":
 
 elif reporte == "Detallado Cadenas":
 
-    df['Document Date'] = pd.to_datetime(df['Document Date'])
     df = df[df['Compania'] == "FABRICA BRILUX C.A.'FABRICA BRILUX C.A."]
 
     df['Document Date'] = pd.to_datetime(df['Document Date'])
@@ -536,7 +535,7 @@ elif reporte == "Detallado Cadenas":
     filtered_df = filtered_df[filtered_df['Salesperson ID'].isin(vendedores_evaluar)]
     
     st.write("Select a date range")
-    
+    st.write(df)
     col1, col2 = st.columns(2)
     start_date = col1.date_input("Start date", value=filtered_df['Document Date'].min().date(), min_value=filtered_df['Document Date'].min().date(), max_value=filtered_df['Document Date'].max().date())
     end_date = col2.date_input("End date", value=filtered_df['Document Date'].max().date(), min_value=filtered_df['Document Date'].min().date(), max_value=filtered_df['Document Date'].max().date())
