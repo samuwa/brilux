@@ -866,6 +866,8 @@ elif reporte == "Proyección Clientes":
 
     df_clientes['Salesperson ID'] = df_clientes['Salesperson ID'].str.replace(r'.*SCI.*', 'SCI', regex=True)
 
+    st.write(df)
+
     df = df[df["Compania"].isin(["FABRICA BRILUX C.A.'FABRICA BRILUX C.A.","FABRICA BRILUX C.A."])]
 
     st.write(df)
