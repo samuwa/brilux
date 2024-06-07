@@ -932,7 +932,6 @@ elif reporte == "Proyección Clientes":
 
     df_filtered = df[df['Customer Name'].isin(customers_with_recent_purchases)]
 
-    st.write(df_filtered)
 
 
     salesperson_customer_details = {}
@@ -1027,7 +1026,7 @@ elif reporte == "Proyección Clientes":
         cs = st.multiselect("", salesperson_customer_details[vs].keys(), salesperson_customer_details[vs].keys(), key="cs")
 
     for x in cs:
-        st.dataframe(pd.DataFrame(salesperson_customer_details[vs][x]))
+        st.dataframe(pd.DataFrame(salesperson_customer_details[vs][x]), hide_index=True)
 
 else:
   pass
