@@ -868,6 +868,8 @@ elif reporte == "Proyección Clientes":
 
     df = df[df["Compania"].isin(["FABRICA BRILUX C.A.'FABRICA BRILUX C.A.","FABRICA BRILUX C.A."])]
 
+    st.write(df)
+
     vendedores_evaluar = ["OFC", "APT", "HGE", "VACIO", "SCI", "MDN"]
 
     salesperson_mapping = df_clientes.set_index('Customer Name')['Salesperson ID'].to_dict()
