@@ -1026,6 +1026,7 @@ elif reporte == "Proyección Clientes":
         cs = st.multiselect("", salesperson_customer_details[vs].keys(), salesperson_customer_details[vs].keys(), key="cs")
 
     for x in cs:
+        st.write(x)
         st.dataframe(pd.DataFrame(salesperson_customer_details[vs][x]), hide_index=True, use_container_width=True)
 
 else:
