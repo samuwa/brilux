@@ -928,6 +928,8 @@ elif reporte == "Proyección Clientes":
 
     df_filtered = df[df['Customer Name'].isin(customers_with_recent_purchases)]
 
+    st.write(df_filtered)
+
 
     salesperson_customer_details = {}
 
@@ -993,15 +995,18 @@ elif reporte == "Proyección Clientes":
     def prepare_salesperson_data(df):
         # Group by Salesperson ID and Customer Name, and find the most recent purchase date
         recent_purchase = df.groupby(['Salesperson ID', 'Customer Name'])['Document Date'].max().reset_index()
+        
 
         # Calculate days since last purchase
         recent_purchase['days_last_purchase'] = (datetime.now() - recent_purchase['Document Date']).dt.days
-
+        
         # Sort by days_last_purchase in descending order
         recent_purchase.sort_values(by=['Salesperson ID', 'days_last_purchase'], ascending=[True, False], inplace=True)
-
+    
         # Create a dictionary of DataFrames for each salesperson
         salesperson_dfs = {k: v for k, v in recent_purchase.groupby('Salesperson ID')}
+
+    
 
         return salesperson_dfs
 
