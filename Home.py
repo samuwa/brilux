@@ -1015,7 +1015,7 @@ elif reporte == "Proyección Clientes":
 
 
     with st.expander("Clientes"):
-        cs = st.multiselect("", salesperson_customer_details[vs].keys(), salesperson_customer_details[vs].keys())
+        cs = st.multiselect("", salesperson_customer_details[vs].keys(), salesperson_customer_details[vs].keys(), key="cs")
 
     for x in cs:
         st.dataframe(pd.DataFrame(salesperson_customer_details[vs][x]))
