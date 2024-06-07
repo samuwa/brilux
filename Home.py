@@ -922,6 +922,7 @@ elif reporte == "Proyección Clientes":
     # Filter the original DataFrame to include only the relevant customers
     filtered_df = filtered_df[filtered_df['Customer Name'].isin(latest_customers)]
 
+    st.write(filtered_df)
 
 
     customers_with_recent_purchases = filtered_df["Customer Name"].unique()
