@@ -866,11 +866,11 @@ elif reporte == "Proyección Clientes":
 
     df_clientes['Salesperson ID'] = df_clientes['Salesperson ID'].str.replace(r'.*SCI.*', 'SCI', regex=True)
 
-    st.write(df)
+    
 
-    df = df[df["Compania"].isin(["FABRICA BRILUX C.A.'FABRICA BRILUX C.A.","FABRICA BRILUX C.A."])]
+    df = df[df["Compania"] == "FABRICA BRILUX")]
 
-    st.write(df)
+  
 
     vendedores_evaluar = ["OFC", "APT", "HGE", "VACIO", "SCI", "MDN"]
 
@@ -926,7 +926,6 @@ elif reporte == "Proyección Clientes":
     # Filter the original DataFrame to include only the relevant customers
     filtered_df = filtered_df[filtered_df['Customer Name'].isin(latest_customers)]
 
-    st.write(filtered_df)
 
 
     customers_with_recent_purchases = filtered_df["Customer Name"].unique()
