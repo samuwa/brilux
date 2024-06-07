@@ -868,7 +868,7 @@ elif reporte == "Proyección Clientes":
 
     
 
-    df = df[df["Compania"] == "FABRICA BRILUX"]]
+    df = df[df["Compania"] == "FABRICA BRILUX"]
 
   
 
