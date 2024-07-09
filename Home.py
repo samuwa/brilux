@@ -1164,10 +1164,14 @@ elif reporte == "Cliente":
 
 
 
-    st.subheader("Descripción")
     df1 = results_df[["Product", "Total QTY", "Instances Purchased", "Capacity"]]
-    st.dataframe(df1, hide_index=True)
 
+    fig2 = px.pie(results_df, values='Total QTY', names='Product')#, title='Total Quantity by Product')
+
+    col1, col2 = st.columns(2)
+    col1.subheader("Descripción")
+    col1.dataframe(df1, hide_index=True)
+    col2.plotly_chart(fig2)
     st.subheader("Predicción")
     df2 = results_df[["Product","Average Daily Consumption", "Last QTY Purchased",  "Days Since Last Purchase", "Estimated Consumption", "Estimated Stock"]]
     st.dataframe(df2, hide_index=True)
