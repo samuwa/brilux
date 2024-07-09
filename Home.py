@@ -1066,7 +1066,14 @@ elif reporte == "Cliente":
 
     total_venta = df["Venta $"].sum()
 
-    st.metric("Venta Total", f"$ {total_venta:,.0f}")
+    
+    total_venta = df["Venta $"].sum()
+
+    vendedor = df["Salesperson ID"].unique()
+
+    col1, col2 = st.columns(2)
+    col1.metric("Venta Total", f"$ {total_venta:,.0f}")
+    col2.metric("Vendedor", str(vendedor[0]))
 
 
     # ===
