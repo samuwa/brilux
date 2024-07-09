@@ -125,7 +125,7 @@ if isinstance(df_sin_cxc, pd.DataFrame) and isinstance(df_cxc, pd.DataFrame):
 
 
 # Seleccionar un reporte a visualizar
-reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Detallado Cadenas", "Ventas SCI", "Análisis Vendedores", "Proyección Clientes"])
+reporte = st.sidebar.selectbox("Selecciona un reporte", ["Diario - Pedidos", "Mensual - Pedidos", "CXC", "Detallado Cadenas", "Ventas SCI", "Análisis Vendedores", "Proyección Clientes", "Cliente"])
 
 
 
@@ -1028,6 +1028,153 @@ elif reporte == "Proyección Clientes":
     for x in cs:
         st.write(x)
         st.dataframe(pd.DataFrame(salesperson_customer_details[vs][x]), hide_index=True, use_container_width=True)
+
+elif reporte == "Cliente":
+
+    col1, col2 = st.columns(2)
+
+    compania = col1.selectbox("Selecciona una compañía", df["Compania"].unique())
+
+    df['Customer Name'] = df['Customer Name'].str.replace(r"(?i)AUTOMERCADOS PLAZA.*", "Automercados Plaza", regex=True)
+
+    df = df[df["Compania"] == compania]
+
+    df["Document Date"] = pd.to_datetime(df["Document Date"])
+
+    df['Month-Year'] = df['Document Date'].dt.to_period('M')
+
+    df = df[df['Document Date'].dt.year == 2024]
+
+
+    customer_list = df['Customer Name'].unique()
+
+
+    # Get min and max dates from the DataFrame
+    min_date, max_date = df['Document Date'].min(), df['Document Date'].max()
+
+    # Date range picker
+    selected_date_range = col2.date_input("Select date range", value=[min_date, max_date], min_value=min_date, max_value=max_date)
+
+    selected_customer = col1.selectbox('Select a Customer', customer_list)
+
+    selected_date_start = pd.Timestamp(selected_date_range[0])
+    selected_date_end = pd.Timestamp(selected_date_range[1])
+
+
+    # Filter the DataFrame based on the selected customer and date range
+    df = df[(df['Customer Name'] == selected_customer) & (df['Document Date'] >= selected_date_start) & (df['Document Date'] <= selected_date_end)]
+
+    total_venta = df["Venta $"].sum()
+
+    st.metric("Venta Total", f"$ {total_venta:,.0f}")
+
+
+    # ===
+
+
+
+    grouped_data = df.groupby(['Month-Year', 'Item Description']).agg({'Venta $': 'sum'}).reset_index()
+
+    grouped_data['Month-Year'] = grouped_data['Month-Year'].dt.to_timestamp()  # Convert Period to Timestamp for plotting
+
+    # Sum 'Venta $' by 'Month-Year' for the total per month
+    total_sales_per_month = df.groupby('Month-Year')['Venta $'].sum().reset_index()
+    total_sales_per_month['Item Description'] = 'Total'
+    total_sales_per_month['Month-Year'] = total_sales_per_month['Month-Year'].dt.to_timestamp().dt.strftime('%Y-%m')
+
+    # Combine detailed and total data
+    combined_data = pd.concat([grouped_data, total_sales_per_month], ignore_index=True)
+
+    # Plot using Plotly Express
+    fig = px.line(combined_data, x='Month-Year', y='Venta $', color='Item Description', line_dash='Item Description',
+                  labels={'Venta $': 'Sales'}, title='Monthly Sales Over Time')
+    fig.update_traces(line=dict(width=4), selector=dict(name='Total'))  # Make the line thicker for total sales
+      # Make the line thicker for total sales
+
+    st.plotly_chart(fig, use_container_width=True)
+
+    with st.expander("Data Tabular"):
+        st.dataframe(combined_data[combined_data["Item Description"] == "Total"][["Month-Year", "Venta $"]], use_container_width=True, hide_index=True)
+
+
+
+    # Identify products purchased more than once
+
+# Identify products purchased more than once
+
+# Group by 'Item Description' to calculate various metrics
+    reference_date = pd.Timestamp(datetime.now())
+
+    products = df['Item Description'].unique()
+
+# Prepare a DataFrame to collect the results
+    results = []
+
+    for product in products:
+        product_records = df[df['Item Description'] == product].sort_values('Document Date')
+
+        # Count the number of instances each product has been purchased
+        instances_purchased = len(product_records)
+        max_qty = product_records['QTY'].max()  # Maximum quantity purchased in one instance
+
+        total_days = 0
+        total_qty_per_day = 0
+        count_intervals = 0
+
+        for i in range(len(product_records) - 1):
+            current_purchase = product_records.iloc[i]
+            next_purchase = product_records.iloc[i + 1]
+
+            days_until_next_purchase = (next_purchase['Document Date'] - current_purchase['Document Date']).days
+            if days_until_next_purchase > 0:
+                qty_per_day = current_purchase['QTY'] / days_until_next_purchase
+                total_days += days_until_next_purchase
+                total_qty_per_day += qty_per_day
+                count_intervals += 1
+
+        if count_intervals > 0:
+            avg_qty_per_day = total_qty_per_day / count_intervals
+        else:
+            avg_qty_per_day = 0
+
+        total_qty = product_records['QTY'].sum()
+        last_purchase = product_records.iloc[-1]
+        last_qty_purchased = last_purchase['QTY']
+        days_since_last_purchase = (reference_date - last_purchase['Document Date']).days
+        estimated_consumption = days_since_last_purchase * avg_qty_per_day
+        estimated_stock = max(0, last_purchase['QTY'] - estimated_consumption)
+        recommended_sale = max(0, max_qty - estimated_stock)
+
+        # Collect the results
+        results.append({
+            'Product': product,
+            'Instances Purchased': instances_purchased,
+            'Last QTY Purchased': last_qty_purchased,
+            'Average Daily Consumption': round(avg_qty_per_day, 2),
+            'Days Since Last Purchase': days_since_last_purchase,
+            'Estimated Consumption': round(estimated_consumption, 0),
+            'Estimated Stock': round(estimated_stock, 0),
+            'Capacity': max_qty,
+            'Recommended Sale': round(recommended_sale, 0),
+            'Total QTY': total_qty,
+            'Stock Level': "Agotado" if estimated_consumption >= last_purchase['QTY'] * 0.9 else "Posible Inventario",
+        })
+
+    results_df = pd.DataFrame(results)
+
+
+
+    st.subheader("Descripción")
+    df1 = results_df[["Product", "Total QTY", "Instances Purchased", "Capacity"]]
+    st.dataframe(df1, hide_index=True)
+
+    st.subheader("Predicción")
+    df2 = results_df[["Product","Average Daily Consumption", "Last QTY Purchased",  "Days Since Last Purchase", "Estimated Consumption", "Estimated Stock"]]
+    st.dataframe(df2, hide_index=True)
+
+    st.subheader("Recomendación")
+    df3 = results_df[["Product", "Recommended Sale"]]
+    st.dataframe(df3, hide_index=True)
 
 else:
   pass
