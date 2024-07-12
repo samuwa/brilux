@@ -1035,7 +1035,7 @@ elif reporte == "Cliente":
 
     compania = col1.selectbox("Selecciona una compañía", df["Compania"].unique())
 
-    df['Customer Name'] = df['Customer Name'].str.replace(r"(?i)AUTOMERCADOS PLAZA.*", "Automercados Plaza", regex=True)
+    #df['Customer Name'] = df['Customer Name'].str.replace(r"(?i)AUTOMERCADOS PLAZA.*", "Automercados Plaza", regex=True)
 
     df = df[df["Compania"] == compania]
 
